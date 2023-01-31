@@ -66,9 +66,6 @@
     <ClCompile Include="sewerclient.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="onnxConfig.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="onnxDetector.h">
@@ -77,7 +74,7 @@
     <CustomBuild Include="sewerclient.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
-    <ClInclude Include="onnxConfig.h">
+    <ClInclude Include="onnxUtils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

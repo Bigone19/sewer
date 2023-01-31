@@ -143,12 +143,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="onnxConfig.cpp" />
     <ClCompile Include="onnxDetector.cpp" />
     <ClCompile Include="sewerclient.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="onnxConfig.h" />
+    <ClInclude Include="onnxUtils.h" />
     <ClInclude Include="onnxDetector.h" />
     <CustomBuild Include="sewerclient.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">sewerclient.h;release\moc_predefs.h;D:\Qt\6.4.1\msvc2019_64\bin\moc.exe;%(AdditionalInputs)</AdditionalInputs>
