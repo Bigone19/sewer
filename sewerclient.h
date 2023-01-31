@@ -2,6 +2,7 @@
 #define SEWERCLIENT_H
 
 #include <QMainWindow>
+#include <QFileDialog>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class SewerClient; }
@@ -15,7 +16,12 @@ public:
     SewerClient(QWidget *parent = nullptr);
     ~SewerClient();
 
+private slots:
+    void on_btnSelectFile_clicked();
+
 private:
     Ui::SewerClient *ui;
+
+    QStringList m_fileList;
 };
 #endif // SEWERCLIENT_H
