@@ -11,7 +11,8 @@ CONFIG += c++14
 SOURCES += \
     main.cpp \
     sewerclient.cpp \
-    onnxDetector.cpp
+    onnxDetector.cpp \
+    onnxUtils.cpp
 
 HEADERS += \
     sewerclient.h \

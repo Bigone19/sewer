@@ -66,19 +66,28 @@
     <ClCompile Include="sewerclient.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="onnxUtils.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="onnxDetector.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <CustomBuild Include="sewerclient.h">
+    <CustomBuild Include="onnxDetector.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
     <ClInclude Include="onnxUtils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <CustomBuild Include="sewerclient.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="debug\moc_onnxDetector.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="release\moc_onnxDetector.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
     <CustomBuild Include="debug\moc_predefs.h.cbt">
       <Filter>Generated Files</Filter>
     </CustomBuild>
