@@ -9,6 +9,7 @@
 #include "onnxUtils.h"
 #include "config.h"
 
+//  [2/2/2023 Administrator]
 // <============ 获取文件夹名称 ==============>
 const vector<QString> g_vecDirPath = fileUtils::loadInitFile();
 
@@ -21,21 +22,30 @@ public:
 
 private:
 	/**
-	* @brief: 设置待检测图片文件夹路径
-	* @param: 
+	* @brief: 设置图片处理结果目录
+	* @param:
+	* @date: 2023/02/02
 	*/
-	void setRawImgDir();
-
+	void setResultDir();
+	/**
+	* @brief: 设置图权重路径
+	* @param: 
+	* @date: 2023/02/02
+	*/
+	void setWeightPath();
+	/**
+	* @brief: 类别名称路径
+	* @param: 
+	* @date: 2023/02/02
+	*/
+	void setClsNamePath();
 private:
 	Ort::Env m_env;
 	Ort::SessionOptions m_sessionOptions;
 	Ort::Session m_session;
 
-	QString m_rawImgDir;		// 原始待检测图片路径
-
 	QString m_resultDirPath;	// 处理结果目录路径
 
-	QString m_weightDirPath;	// 权重目录位置
 	string m_weightPath;		// 权重位置
 
 	QString m_clsNameDirPath;	// 类别名称目录路径

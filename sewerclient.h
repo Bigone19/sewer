@@ -3,6 +3,8 @@
 
 #include <QMainWindow>
 #include <QFileDialog>
+// update [2/2/2023 Administrator]
+#include "onnxDetector.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class SewerClient; }
