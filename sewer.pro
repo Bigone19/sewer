@@ -17,7 +17,8 @@ SOURCES += \
 HEADERS += \
     sewerclient.h \
     onnxDetector.h \
-    onnxUtils.h
+    onnxUtils.h \
+    config.h
 
 FORMS += \
     sewerclient.ui

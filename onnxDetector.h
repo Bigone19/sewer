@@ -7,6 +7,7 @@
 #include <onnxruntime_cxx_api.h>
 
 #include "onnxUtils.h"
+#include "config.h"
 
 // <============ 获取文件夹名称 ==============>
 const vector<QString> g_vecDirPath = fileUtils::loadInitFile();
