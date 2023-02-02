@@ -6,7 +6,11 @@ CDetector::CDetector(Config& config, QObject* parent /*= nullptr*/)
 	, m_sessionOptions(nullptr)
 	, m_session(nullptr)
 {
-	// update [2/2/2023 Administrator]
+	// load config [2/3/2023 Administrator]
+	m_inputShape = { 1, config.s_numChannels, config.s_height, config.s_width };
+	m_outputShape = { 1, config.s_numClasses };
+
+	// confirm dir & file path [2/2/2023 Administrator]
 	setResultDir();
 	if (setWeightPath() /* model_troch_export.onnx */)
 	{
@@ -37,6 +41,10 @@ CDetector::~CDetector()
 	m_env.release();
 	m_sessionOptions.release();
 	m_session.release();
+
+	fill(begin(m_inputShape), end(m_inputShape), 0);
+	fill(begin(m_outputShape), end(m_outputShape), 0);
+	m_clsNameVec.clear();
 }
 
 void CDetector::setResultDir()
