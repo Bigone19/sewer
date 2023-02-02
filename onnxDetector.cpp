@@ -6,11 +6,11 @@ CDetector::CDetector(Config& config, QObject* parent /*= nullptr*/)
 	, m_sessionOptions(nullptr)
 	, m_session(nullptr)
 {
-	// load config [2/3/2023 Administrator]
+	// load config [2/3/2023]
 	m_inputShape = { 1, config.s_numChannels, config.s_height, config.s_width };
 	m_outputShape = { 1, config.s_numClasses };
 
-	// confirm dir & file path [2/2/2023 Administrator]
+	// confirm dir & file path [2/2/2023]
 	setResultDir();
 	if (setWeightPath() /* model_troch_export.onnx */)
 	{

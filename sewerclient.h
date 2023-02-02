@@ -3,7 +3,7 @@
 
 #include <QMainWindow>
 #include <QFileDialog>
-// update [2/2/2023 Administrator]
+// update [2/2/2023 ]
 #include "onnxDetector.h"
 
 QT_BEGIN_NAMESPACE

@@ -17,7 +17,7 @@ using std::fill;
 using std::begin;
 using std::end;
 
-//  [2/2/2023 Administrator]
+//  [2/2/2023]
 // <============ 获取文件夹名称 ==============>
 const vector<QString> g_vecDirPath = fileUtils::loadInitFile();
 
@@ -58,8 +58,8 @@ private:
 	Ort::SessionOptions m_sessionOptions;
 	Ort::Session m_session;
 
-	array<int64_t, 4> m_inputShape;		// 输入张量信息 [2/3/2023 Administrator]
-	array<int64_t, 2> m_outputShape;	// 输出张量信息 [2/3/2023 Administrator]
+	array<int64_t, 4> m_inputShape;		// 输入张量信息 [2/3/2023]
+	array<int64_t, 2> m_outputShape;	// 输出张量信息 [2/3/2023]
 	
 	QString m_resultDirPath;		// 处理结果目录路径
 #ifdef _WIN32
