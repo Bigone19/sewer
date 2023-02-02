@@ -12,6 +12,7 @@
 #include <vector>
 #include <string>
 #include <fstream>
+
 #include <QtCore>
 
 using std::vector;
@@ -54,6 +55,16 @@ namespace fileUtils
 	* [2]: 权重文件夹路径;[3]: 处理结果路径;[4]: 类别名称路径
 	*/
 	vector<QString> loadInitFile();
+}
+
+namespace onnxUtils
+{
+	/**
+	* @brief: 加载检测类名
+	* @param: 
+	* @date: 2023/02/02
+	*/
+	vector<string> loadClsNames(const string& path);
 }
 
 #endif

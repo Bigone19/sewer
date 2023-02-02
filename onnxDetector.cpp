@@ -8,12 +8,35 @@ CDetector::CDetector(Config& config, QObject* parent /*= nullptr*/)
 {
 	// update [2/2/2023 Administrator]
 	setResultDir();
-	setWeightPath(); // model_troch_export.onnx
+	if (setWeightPath() /* model_troch_export.onnx */)
+	{
+#ifdef _WIN32
+		m_session = Ort::Session(m_env, m_weightPath.c_str(), Ort::SessionOptions{ nullptr });
+#else
+		m_session = Ort::Session(m_env, m_weightPath.c_str(), Ort::SessionOptions{ nullptr });
+#endif
+	}
+	else
+	{
+		qDebug() << ERROR_CODE_6;
+		assert("加载权重文件错误：没有找到权重文件");
+	}
+	if (setClsNamePath())
+	{
+		m_clsNameVec = onnxUtils::loadClsNames(m_clsNamePath);
+	}
+	else
+	{
+		qDebug() << ERROR_CODE_7;
+		assert("加载类别文件错误：没有找到类别名称文件");
+	}
 }
 
 CDetector::~CDetector()
 {
-
+	m_env.release();
+	m_sessionOptions.release();
+	m_session.release();
 }
 
 void CDetector::setResultDir()
@@ -22,6 +45,7 @@ void CDetector::setResultDir()
 	if (dirPath.isEmpty())
 	{
 		qDebug() << __FUNCTION__ << ERROR_CODE_1;
+		return;
 	}
 	QDir tmpDir(dirPath);
 	if (!tmpDir.exists())
@@ -36,43 +60,62 @@ void CDetector::setResultDir()
 /* 获取model_troch_export.onnx位置                                      */
 /* add date: 2023/2/2                                                  */
 /************************************************************************/
-void CDetector::setWeightPath()
+bool CDetector::setWeightPath()
 {
 	QString dirPath = g_vecDirPath.at(2);
 	if (dirPath.isEmpty())
 	{
 		qDebug() << __FUNCTION__ << ERROR_CODE_1;
+		return false;
 	}
 	QDir tmpDir(dirPath);
 	if (!tmpDir.exists())
 	{
 		qDebug() << __FUNCTION__ << ERROR_CODE_2;
-		return;
+		return false;
 	}
 	QString weightPath = dirPath + "model_troch_export.onnx";
 	QFile tmpFile(weightPath);
 	if (!tmpFile.exists())
 	{
 		qDebug() << __FUNCTION__ << ERROR_CODE_3;
-		return;
+		return false;
 	}
+#ifdef _WIN32
+	m_weightPath = stringToWstring(weightPath.toStdString());
+#else
 	m_weightPath = weightPath.toStdString();
+#endif
+	return true;
 }
 
-void CDetector::setClsNamePath()
+bool CDetector::setClsNamePath()
 {
 	QString dirPath = g_vecDirPath.at(4);
 	if (dirPath.isEmpty())
 	{
 		qDebug() << __FUNCTION__ << ERROR_CODE_1;
+		return false;
 	}
 	QDir tmpDir(dirPath);
 	if (!tmpDir.exists())
 	{
 		qDebug() << __FUNCTION__ << ERROR_CODE_4;
-		return;
+		return false;
 	}
-	QString weightPath = dirPath + "";
-	QFile tmpFile(weightPath);
+	QString namesPath = dirPath + "sewer.names";
+	QFile tmpFile(namesPath);
+	if (!tmpFile.exists())
+	{
+		qDebug() << __FUNCTION__ << ERROR_CODE_5;
+		return false;
+	}
+	m_clsNamePath = namesPath.toStdString();
+	return true;
+}
 
+wstring CDetector::stringToWstring(const string& str)
+{
+	std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
+	return converter.from_bytes(str);
 }

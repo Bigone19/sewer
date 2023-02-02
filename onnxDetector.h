@@ -6,6 +6,9 @@
 #include <QDebug>
 #include <onnxruntime_cxx_api.h>
 
+#include <locale>
+#include <codecvt>
+
 #include "onnxUtils.h"
 #include "config.h"
 
@@ -32,25 +35,33 @@ private:
 	* @param: 
 	* @date: 2023/02/02
 	*/
-	void setWeightPath();
+	bool setWeightPath();
 	/**
 	* @brief: 类别名称路径
 	* @param: 
 	* @date: 2023/02/02
 	*/
-	void setClsNamePath();
+	bool setClsNamePath();
+	/**
+	* @brief:
+	* @param:
+	* @date: 2023/02/03
+	*/
+	inline wstring stringToWstring(const string& str);
 private:
 	Ort::Env m_env;
 	Ort::SessionOptions m_sessionOptions;
 	Ort::Session m_session;
 
-	QString m_resultDirPath;	// 处理结果目录路径
+	QString m_resultDirPath;		// 处理结果目录路径
+#ifdef _WIN32
+	wstring m_weightPath;			// 权重位置
+#else
+	string m_weightPath;			// 权重位置
+#endif
+	string m_clsNamePath;			// 类别名称路径
 
-	string m_weightPath;		// 权重位置
-
-	QString m_clsNameDirPath;	// 类别名称目录路径
-	string m_clsNamePath;		// 类别名称路径
-
+	vector<string> m_clsNameVec;	// 检测类别名称
 };
 
 #endif
