@@ -16,18 +16,26 @@ using std::array;
 using std::fill;
 using std::begin;
 using std::end;
+using std::pair;
 
 //  [2/2/2023]
 // <============ 获取文件夹名称 ==============>
 const vector<QString> g_vecDirPath = fileUtils::loadInitFile();
+// 全局onnx配置结构体 [2/3/2023]
+constexpr Config g_cfg = { 3, 224, 224, 17 };
 
 class CDetector : public QObject
 {
 	Q_OBJECT
 public:
-	CDetector(Config& config, QObject* parent = nullptr);
+	CDetector(QObject* parent = nullptr);
 	~CDetector();
-
+	/**
+	* @brief: 检测图片结果队列
+	* @param: 
+	* @date: 2023/02/03
+	*/
+	vector<pair<size_t, float>> getDetectRes(string& imgPath);
 private:
 	/**
 	* @brief: 设置图片处理结果目录
@@ -55,12 +63,9 @@ private:
 	inline wstring stringToWstring(const string& str);
 private:
 	Ort::Env m_env;
-	Ort::SessionOptions m_sessionOptions;
+	Ort::RunOptions m_runOptions;
 	Ort::Session m_session;
 
-	array<int64_t, 4> m_inputShape;		// 输入张量信息 [2/3/2023]
-	array<int64_t, 2> m_outputShape;	// 输出张量信息 [2/3/2023]
-	
 	QString m_resultDirPath;		// 处理结果目录路径
 #ifdef _WIN32
 	wstring m_weightPath;			// 权重位置

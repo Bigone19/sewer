@@ -1,15 +1,11 @@
 #include "onnxDetector.h"
 
-CDetector::CDetector(Config& config, QObject* parent /*= nullptr*/)
+CDetector::CDetector(QObject* parent /*= nullptr*/)
 	: QObject(parent)
 	, m_env(nullptr)
-	, m_sessionOptions(nullptr)
+	, m_runOptions(nullptr)
 	, m_session(nullptr)
 {
-	// load config [2/3/2023]
-	m_inputShape = { 1, config.s_numChannels, config.s_height, config.s_width };
-	m_outputShape = { 1, config.s_numClasses };
-
 	// confirm dir & file path [2/2/2023]
 	setResultDir();
 	if (setWeightPath() /* model_troch_export.onnx */)
@@ -39,12 +35,76 @@ CDetector::CDetector(Config& config, QObject* parent /*= nullptr*/)
 CDetector::~CDetector()
 {
 	m_env.release();
-	m_sessionOptions.release();
+	m_runOptions.release();
 	m_session.release();
 
-	fill(begin(m_inputShape), end(m_inputShape), 0);
-	fill(begin(m_outputShape), end(m_outputShape), 0);
 	m_clsNameVec.clear();
+}
+
+vector<pair<size_t, float>> CDetector::getDetectRes(string& imgPath)
+{
+	Mat srcImage = imread(imgPath);
+	cv::cvtColor(srcImage, srcImage, COLOR_BGR2RGB);
+	cv::resize(srcImage, srcImage, Size(224, 224));
+	srcImage = srcImage.reshape(1, 1);
+
+	vector<float> vec;
+	srcImage.convertTo(vec, CV_32FC1, 1. / 255);
+	vector<float> imageVec;
+
+	for (size_t ch = 0; ch < 3; ++ch)
+	{
+		for (size_t i = ch; i < vec.size(); i += 3)
+		{
+			imageVec.emplace_back(vec[i]);
+		}
+	}
+	// load config [2/3/2023]
+	array<int64_t, 4> inputShape = { 1, g_cfg.s_numChannels, g_cfg.s_height, g_cfg.s_width };
+	array<int64_t, 2> outputShape = { 1, g_cfg.s_numClasses };
+
+	array<float, g_cfg.s_numInputElements> input;
+	array<float, g_cfg.s_numClasses> results;
+
+	auto memory_info = Ort::MemoryInfo::CreateCpu(OrtDeviceAllocator, OrtMemTypeCPU);
+	auto inputTensor = Ort::Value::CreateTensor<float>(memory_info, input.data(), input.size(), inputShape.data(), inputShape.size());
+	auto outputTensor = Ort::Value::CreateTensor<float>(memory_info, results.data(), results.size(), outputShape.data(), outputShape.size());
+
+	std::copy(imageVec.begin(), imageVec.end(), input.begin());
+
+	// define names
+	Ort::AllocatorWithDefaultOptions ort_alloc;
+	const char* inputName = m_session.GetInputName(0, ort_alloc);
+	const char* outputName = m_session.GetOutputName(0, ort_alloc);
+	const std::array<const char*, 1> inputNames = { inputName };
+	const std::array<const char*, 1> outputNames = { outputName };
+
+	// run inference
+	try
+	{
+		m_session.Run(m_runOptions, inputNames.data(), &inputTensor, 1, outputNames.data(), &outputTensor, 1);
+	}
+	catch (Ort::Exception& e)
+	{
+		assert(e.what());
+	}
+
+	// sort results
+	vector<pair<size_t, float>> indexValuePairs;
+
+	for (size_t i = 0; i < results.size(); ++i)
+	{
+		indexValuePairs.emplace_back(i, results[i]);
+	}
+	std::sort(indexValuePairs.begin(), indexValuePairs.end(), [](const auto& lhs, const auto& rhs) { return lhs.second > rhs.second; });
+
+	for (size_t i = 0; i < 5; ++i)
+	{
+		const auto& result = indexValuePairs[i];
+		qDebug() << i + 1 << ": " << QString::fromLocal8Bit(m_clsNameVec[result.first]) << " " << result.second << Qt::endl;
+	}
+
+	return indexValuePairs;
 }
 
 void CDetector::setResultDir()

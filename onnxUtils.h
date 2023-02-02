@@ -13,8 +13,13 @@
 #include <string>
 #include <fstream>
 
+#include <opencv2/opencv.hpp>
+#include <opencv2/imgproc.hpp>
+#include <opencv2/dnn.hpp>
+
 #include <QtCore>
 
+using namespace cv;
 using std::vector;
 using std::string;
 using std::wstring;
