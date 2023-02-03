@@ -2,8 +2,6 @@
 
 CDetector::CDetector(QObject* parent /*= nullptr*/)
 	: QObject(parent)
-	, m_env(nullptr)
-	, m_runOptions(nullptr)
 	, m_session(nullptr)
 {
 	// confirm dir & file path [2/2/2023]
@@ -19,7 +17,6 @@ CDetector::CDetector(QObject* parent /*= nullptr*/)
 	else
 	{
 		qDebug() << ERROR_CODE_6;
-		assert("加载权重文件错误：没有找到权重文件");
 	}
 	if (setClsNamePath())
 	{
@@ -28,7 +25,6 @@ CDetector::CDetector(QObject* parent /*= nullptr*/)
 	else
 	{
 		qDebug() << ERROR_CODE_7;
-		assert("加载类别文件错误：没有找到类别名称文件");
 	}
 }
 
@@ -41,9 +37,8 @@ CDetector::~CDetector()
 	m_clsNameVec.clear();
 }
 
-vector<pair<size_t, float>> CDetector::getDetectRes(string& imgPath)
+vector<pair<size_t, float>> CDetector::getDetectRes(Mat& srcImage)
 {
-	Mat srcImage = imread(imgPath);
 	cv::cvtColor(srcImage, srcImage, COLOR_BGR2RGB);
 	cv::resize(srcImage, srcImage, Size(224, 224));
 	srcImage = srcImage.reshape(1, 1);
@@ -105,6 +100,11 @@ vector<pair<size_t, float>> CDetector::getDetectRes(string& imgPath)
 	}
 
 	return indexValuePairs;
+}
+
+void CDetector::imgName2ResName(const string& imgName, string& resName)
+{
+	resName = m_resultDirPath.toStdString() + imgName;
 }
 
 void CDetector::setResultDir()

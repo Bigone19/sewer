@@ -18,9 +18,13 @@ using std::begin;
 using std::end;
 using std::pair;
 
-//  [2/2/2023]
-// <============ 获取文件夹名称 ==============>
-const vector<QString> g_vecDirPath = fileUtils::loadInitFile();
+// 项目路径 [2/5/2023]
+const QString g_projectPath = QDir::currentPath();
+// 文件夹路径初始化 [2/5/2023]
+const string g_initFilePath = g_projectPath.toStdString() + "/init_dir.cfg";
+// 获取文件夹名称 [2/4/2023]
+const vector<QString> g_vecDirPath = fileUtils::loadInitFile(g_initFilePath);
+
 // 全局onnx配置结构体 [2/3/2023]
 constexpr Config g_cfg = { 3, 224, 224, 17 };
 
@@ -35,7 +39,14 @@ public:
 	* @param: 
 	* @date: 2023/02/03
 	*/
-	vector<pair<size_t, float>> getDetectRes(string& imgPath);
+	vector<pair<size_t, float> > getDetectRes(Mat& srcImage);
+	/**
+	* @brief: 检测完成后将识别结果绝对路径修改为到处理结果目录
+	* @param: 
+	* @date: 2023/02/04
+	*/
+	// 需添加检测到缺陷类型 [2/4/2023]
+	void imgName2ResName(const string& imgName, string& resName);
 private:
 	/**
 	* @brief: 设置图片处理结果目录

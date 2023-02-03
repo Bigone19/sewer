@@ -19,11 +19,39 @@ public:
     ~SewerClient();
 
 private slots:
+    /**
+    * @brief: 选择文件槽
+    * @param: 
+    * @date: 2023/02/03
+    */
     void on_btnSelectFile_clicked();
+    /**
+    * @brief: 检测目标槽
+    * @param: 
+    * @date: 2023/02/03
+    */
+    void on_btnDetect_clicked();
 
+private:
+    /**
+    * @brief: 检测函数入口
+    * @param: 
+    * @date: 2023/02/03
+    */
+    bool imgDetect();
+    /**
+    * @brief: 配置选择图片信息
+    * @param: 
+    * @date: 2023/02/04
+    */
+    void setImgInfo();
 private:
     Ui::SewerClient *ui;
 
-    QStringList m_fileList;
+    CDetector* m_detector;      // onnx检测器 [2/3/2023]
+    vector<pair<size_t, float> > m_detectResVec;    // 检测结果列表 [2/4/2023]
+
+    QStringList m_fileList;     // 选择文件列表 [2/4/2023]
+    QFileInfoList m_lstFileInfo;
 };
 #endif // SEWERCLIENT_H

@@ -25,11 +25,6 @@ using std::string;
 using std::wstring;
 using std::ifstream;
 
-// <============ 项目路径 =============>
-const QString g_projectPath = QDir::currentPath();
-// <============ 文件夹路径初始化 ==============>
-const string g_initFilePath = g_projectPath.toStdString() + "/init_dir.cfg";
-
 struct Config
 {
 	int64_t s_numChannels;		// 通道数
@@ -59,7 +54,7 @@ namespace fileUtils
 	* 格式: [0]: 原始图片路径;[1]处理完成后备份图片路径;
 	* [2]: 权重文件夹路径;[3]: 处理结果路径;[4]: 类别名称路径
 	*/
-	vector<QString> loadInitFile();
+	vector<QString> loadInitFile(const string& initialFilePath);
 }
 
 namespace onnxUtils
@@ -71,5 +66,4 @@ namespace onnxUtils
 	*/
 	vector<string> loadClsNames(const string& path);
 }
-
 #endif

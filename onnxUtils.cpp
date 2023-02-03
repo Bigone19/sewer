@@ -1,10 +1,11 @@
 #include "onnxUtils.h"
 
-vector<QString> fileUtils::loadInitFile()
+
+vector<QString> fileUtils::loadInitFile(const string& initialFilePath)
 {
 	vector<QString> res;
 	res.clear();
-	ifstream ifs(g_initFilePath);
+	ifstream ifs(initialFilePath);
 	if (ifs.is_open())
 	{
 		string line;
@@ -14,7 +15,7 @@ vector<QString> fileUtils::loadInitFile()
 			{
 				line.pop_back();
 			}
-			res.emplace_back(g_projectPath + QString::fromStdString(line));
+			res.emplace_back(QDir::currentPath() + QString::fromStdString(line));
 		}
 	}
 	return res;
