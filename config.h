@@ -10,5 +10,6 @@
 #define ERROR_CODE_5    QString::fromLocal8Bit("设的类别文件路径错误：没有找到类别文件 ") 
 #define ERROR_CODE_6    QString::fromLocal8Bit("加载权重文件错误：没有找到权重文件 ") 
 #define ERROR_CODE_7    QString::fromLocal8Bit("加载类别文件错误：没有找到类别名称文件 ") 
+#define ERROR_CODE_8    QString::fromLocal8Bit("ONNX检测器加载失败 ") 
 
 #endif

@@ -1,4 +1,4 @@
-QT       += core sql concurrent network gui
+QT       += core gui network concurrent testlib
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -12,13 +12,15 @@ SOURCES += \
     main.cpp \
     sewerclient.cpp \
     onnxDetector.cpp \
-    onnxUtils.cpp
+    onnxUtils.cpp \
+    docxUtils.cpp
 
 HEADERS += \
     sewerclient.h \
     onnxDetector.h \
     onnxUtils.h \
-    config.h
+    config.h \
+    docxUtils.h
 
 FORMS += \
     sewerclient.ui

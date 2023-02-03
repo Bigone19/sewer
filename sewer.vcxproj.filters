@@ -57,20 +57,29 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="docxUtils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="onnxDetector.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="onnxUtils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="sewerclient.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="onnxUtils.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="config.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="docxUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <CustomBuild Include="onnxDetector.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
@@ -133,10 +142,5 @@
     <None Include="release\sewer_zh_CN.qm">
       <Filter>Resource Files</Filter>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="config.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>
