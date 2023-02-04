@@ -5,14 +5,16 @@ SewerClient::SewerClient(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::SewerClient)
 {
-    ui->setupUi(this);
+	m_clsNames.clear();
 
+    ui->setupUi(this);
 	ui->btnDetect->setEnabled(false);
 }
 
 SewerClient::~SewerClient()
 {
 	m_detectResVec.clear();
+	m_clsNames.clear();
     m_fileList.clear();
     delete ui;
 }
@@ -48,19 +50,28 @@ bool SewerClient::imgDetect()
 	try
 	{
 		m_detector = new CDetector();
+		if (m_clsNames.empty())
+		{
+			m_detector->getClsNames(m_clsNames);
+		}
 		qDebug() << SUCCEED_CODE_1;
 		for (QFileInfo& info : m_lstFileInfo)
 		{
 			string imgPath = info.absoluteFilePath().toStdString(); // 待检测图片绝对路径 [2/4/2023]
-			string imgName = info.fileName().toStdString();		// 图片文件名称 [2/4/2023]
+			string imgName = info.baseName().toStdString() + "_";		// 图片文件名称 [2/4/2023]
 			string dstImgPath;		// 处理完成移动后图片路径 [2/4/2023]
-			m_detector->imgName2ResName(imgName, dstImgPath);
-
 			try
 			{
 				Mat srcImg = imread(imgPath);
+				Mat dstImg = srcImg.clone();
+				qDebug() << QString::fromLocal8Bit("detecting image: %1").arg(QString::fromStdString(imgName));
 				m_detectResVec = m_detector->getDetectRes(srcImg);
-				imwrite(dstImgPath, srcImg);
+				// 文件名添加检测类别 [2/5/2023]
+				auto& resCls = m_detectResVec.at(0);
+				imgName +=(m_clsNames.at(resCls.first) + ".png");
+				m_detector->imgName2ResName(imgName, dstImgPath);
+
+				imwrite(dstImgPath, dstImg);
 			}
 			catch (const cv::Exception& e)
 			{

@@ -47,6 +47,8 @@ public:
 	*/
 	// 需添加检测到缺陷类型 [2/4/2023]
 	void imgName2ResName(const string& imgName, string& resName);
+	// 返回类别列表 [2/5/2023]
+	void getClsNames(vector<string>& resVec);
 private:
 	/**
 	* @brief: 设置图片处理结果目录

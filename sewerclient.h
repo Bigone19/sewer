@@ -53,5 +53,6 @@ private:
 
     QStringList m_fileList;     // 选择文件列表 [2/4/2023]
     QFileInfoList m_lstFileInfo;
+    vector<string> m_clsNames;  // 类别名称列表 [2/5/2023]
 };
 #endif // SEWERCLIENT_H

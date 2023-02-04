@@ -1,9 +1,12 @@
 #include "onnxDetector.h"
+#include <opencv2/core/utils/logger.hpp>
 
 CDetector::CDetector(QObject* parent /*= nullptr*/)
 	: QObject(parent)
 	, m_session(nullptr)
 {
+	// 只显示错误CV日志 [2/5/2023]
+	utils::logging::setLogLevel(utils::logging::LOG_LEVEL_FATAL);
 	// confirm dir & file path [2/2/2023]
 	setResultDir();
 	if (setWeightPath() /* model_troch_export.onnx */)
@@ -39,8 +42,8 @@ CDetector::~CDetector()
 
 vector<pair<size_t, float>> CDetector::getDetectRes(Mat& srcImage)
 {
-	cv::cvtColor(srcImage, srcImage, COLOR_BGR2RGB);
-	cv::resize(srcImage, srcImage, Size(224, 224));
+	cvtColor(srcImage, srcImage, COLOR_BGR2RGB);
+	resize(srcImage, srcImage, Size(224, 224));
 	srcImage = srcImage.reshape(1, 1);
 
 	vector<float> vec;
@@ -93,10 +96,10 @@ vector<pair<size_t, float>> CDetector::getDetectRes(Mat& srcImage)
 	}
 	std::sort(indexValuePairs.begin(), indexValuePairs.end(), [](const auto& lhs, const auto& rhs) { return lhs.second > rhs.second; });
 
-	for (size_t i = 0; i < 5; ++i)
+	for (size_t i = 0; i < 4; ++i)
 	{
 		const auto& result = indexValuePairs[i];
-		qDebug() << i + 1 << ": " << QString::fromLocal8Bit(m_clsNameVec[result.first]) << " " << result.second << Qt::endl;
+		qDebug() << i + 1 << ": " << QString::fromLocal8Bit(m_clsNameVec[result.first]) << " " << result.second;
 	}
 
 	return indexValuePairs;
@@ -105,6 +108,11 @@ vector<pair<size_t, float>> CDetector::getDetectRes(Mat& srcImage)
 void CDetector::imgName2ResName(const string& imgName, string& resName)
 {
 	resName = m_resultDirPath.toStdString() + imgName;
+}
+
+void CDetector::getClsNames(vector<string>& resVec)
+{
+	resVec = m_clsNameVec;
 }
 
 void CDetector::setResultDir()
