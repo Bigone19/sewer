@@ -1,4 +1,4 @@
-QT       += core gui network concurrent testlib
+QT       += core gui network concurrent testlib axcontainer
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -12,15 +12,13 @@ SOURCES += \
     main.cpp \
     sewerclient.cpp \
     onnxDetector.cpp \
-    onnxUtils.cpp \
-    docxUtils.cpp
+    onnxUtils.cpp
 
 HEADERS += \
     sewerclient.h \
     onnxDetector.h \
     onnxUtils.h \
-    config.h \
-    docxUtils.h
+    config.h
 
 FORMS += \
     sewerclient.ui

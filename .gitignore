@@ -371,3 +371,8 @@ MigrationBackup/
 FodyWeavers.xsd
 /weights/model_troch_export.onnx
 *.png
+*.ts
+*.ts
+/docxUtils/docxUtils_zh_CN.ts
+/docxUtils/docxUtils_zh_CN.ts
+*.ts

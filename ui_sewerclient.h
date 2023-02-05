@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'sewerclient.ui'
 **
-** Created by: Qt User Interface Compiler version 6.4.1
+** Created by: Qt User Interface Compiler version 6.1.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -38,30 +38,30 @@ public:
     void setupUi(QMainWindow *SewerClient)
     {
         if (SewerClient->objectName().isEmpty())
-            SewerClient->setObjectName("SewerClient");
+            SewerClient->setObjectName(QString::fromUtf8("SewerClient"));
         SewerClient->resize(654, 712);
         centralwidget = new QWidget(SewerClient);
-        centralwidget->setObjectName("centralwidget");
+        centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
         widget = new QWidget(centralwidget);
-        widget->setObjectName("widget");
+        widget->setObjectName(QString::fromUtf8("widget"));
         widget->setGeometry(QRect(0, 0, 642, 680));
         verticalLayout = new QVBoxLayout(widget);
-        verticalLayout->setObjectName("verticalLayout");
+        verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
         verticalLayout->setContentsMargins(0, 0, 0, 0);
         horizontalLayout = new QHBoxLayout();
-        horizontalLayout->setObjectName("horizontalLayout");
+        horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
         filePostion = new QLineEdit(widget);
-        filePostion->setObjectName("filePostion");
+        filePostion->setObjectName(QString::fromUtf8("filePostion"));
 
         horizontalLayout->addWidget(filePostion);
 
         btnSelectFile = new QPushButton(widget);
-        btnSelectFile->setObjectName("btnSelectFile");
+        btnSelectFile->setObjectName(QString::fromUtf8("btnSelectFile"));
 
         horizontalLayout->addWidget(btnSelectFile);
 
         btnDetect = new QPushButton(widget);
-        btnDetect->setObjectName("btnDetect");
+        btnDetect->setObjectName(QString::fromUtf8("btnDetect"));
 
         horizontalLayout->addWidget(btnDetect);
 
@@ -69,14 +69,14 @@ public:
         verticalLayout->addLayout(horizontalLayout);
 
         labelImgDisplay = new QLabel(widget);
-        labelImgDisplay->setObjectName("labelImgDisplay");
+        labelImgDisplay->setObjectName(QString::fromUtf8("labelImgDisplay"));
         labelImgDisplay->setMinimumSize(QSize(640, 640));
 
         verticalLayout->addWidget(labelImgDisplay);
 
         SewerClient->setCentralWidget(centralwidget);
         statusbar = new QStatusBar(SewerClient);
-        statusbar->setObjectName("statusbar");
+        statusbar->setObjectName(QString::fromUtf8("statusbar"));
         SewerClient->setStatusBar(statusbar);
 
         retranslateUi(SewerClient);

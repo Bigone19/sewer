@@ -68,7 +68,7 @@ bool SewerClient::imgDetect()
 				m_detectResVec = m_detector->getDetectRes(srcImg);
 				// 文件名添加检测类别 [2/5/2023]
 				auto& resCls = m_detectResVec.at(0);
-				imgName +=(m_clsNames.at(resCls.first) + ".png");
+				imgName +=(m_clsNames.at(resCls.first) + "." + info.suffix().toStdString());
 				m_detector->imgName2ResName(imgName, dstImgPath);
 
 				imwrite(dstImgPath, dstImg);
