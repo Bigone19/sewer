@@ -14,10 +14,11 @@
 
 #include "docxUtils_global.h"
 #include "docxlength.h"
+#include "./oxml/oxmltable.h"
+#include "shared.h"
 
 namespace DocxUtils
 {
-
 }
 
 #endif // !__DOCXTABLE_H__

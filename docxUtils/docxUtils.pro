@@ -1,5 +1,5 @@
 QT -= gui
-QT += xml
+QT += xml gui-private
 
 TEMPLATE = lib
 DEFINES += DOCXUTILS_LIBRARY
@@ -13,13 +13,17 @@ CONFIG += c++17
 SOURCES += \
     docxutils.cpp \
     docxtable.cpp \
-    docxlength.cpp
+    docxlength.cpp \
+    shared.cpp \
+    oxml/oxmltable.cpp
 
 HEADERS += \
     docxUtils_global.h \
     docxutils.h \
     docxtable.h \
-    docxlength.h
+    docxlength.h \
+    shared.h \
+    oxml/oxmltable.h
 
 TRANSLATIONS += \
     docxUtils_zh_CN.ts

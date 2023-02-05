@@ -1,3 +1,8 @@
 #include "docxtable.h"
 
-using namespace DocxUtils;
+#include <QDebug>
+
+namespace DocxUtils
+{
+
+}
