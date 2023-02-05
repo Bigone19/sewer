@@ -12,13 +12,15 @@ SOURCES += \
     main.cpp \
     sewerclient.cpp \
     onnxDetector.cpp \
-    onnxUtils.cpp
+    onnxUtils.cpp \
+    docxUtils.cpp
 
 HEADERS += \
     sewerclient.h \
     onnxDetector.h \
     onnxUtils.h \
-    config.h
+    config.h \
+    docxUtils.h
 
 FORMS += \
     sewerclient.ui
@@ -31,16 +33,20 @@ CONFIG += embed_translations
 INCLUDEPATH+=../opencv/build/include \
              ../opencv/build/include/opencv \
              ../opencv/build/include/opencv2 \
-             ../Microsoft.ML.OnnxRuntime.1.10.0/build/native/include
+             ../Microsoft.ML.OnnxRuntime.1.10.0/build/native/include \
+             ./docx_include
 DEPENDPATH+=../opencv/build/include \
             ../opencv/build/include/opencv \
             ../opencv/build/include/opencv2 \
-            ../Microsoft.ML.OnnxRuntime.1.10.0/build/native/include
+            ../Microsoft.ML.OnnxRuntime.1.10.0/build/native/include \
+            ./docx_include
 LIBS += -L../opencv/build/x64/vc15/lib \
         -lopencv_world452d \
         -lopencv_world452\
         -L../Microsoft.ML.OnnxRuntime.1.10.0/runtimes/win-x64/native \
-        -lonnxruntime
+        -lonnxruntime \
+        -L./docx_runtimes \
+        -ldocxlib
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
