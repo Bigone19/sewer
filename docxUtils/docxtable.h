@@ -1,21 +1,23 @@
-#ifndef DOCXUTILS_H
-#define DOCXUTILS_H
+#pragma once
+
+#ifndef __DOCXTABLE_H__
+#define __DOCXTABLE_H__
 
 /************************************************************************/
-/* docx文档写入模块                                                     */
+/* docx表格模块                                                         */
 /* 2023/02/05                                                           */
 /************************************************************************/
 
+#include <QString>
+#include <QDomDocument>
+#include <QSharedPointer>
+
 #include "docxUtils_global.h"
+#include "docxlength.h"
 
 namespace DocxUtils
 {
-	class DOCXUTILS_EXPORT CDocxUtils
-	{
-	public:
-		CDocxUtils();
-		virtual ~CDocxUtils();
-	};
+
 }
 
-#endif // DOCXUTILS_H
+#endif // !__DOCXTABLE_H__

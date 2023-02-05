@@ -18,6 +18,12 @@ int main(int argc, char *argv[])
         }
     }
     SewerClient w;
+    // ¹ýÂË´°¿Ú°´Å¥ [2/5/2023]
+	Qt::WindowFlags flags = Qt::Dialog;
+	flags |= Qt::WindowMinimizeButtonHint;
+	flags |= Qt::WindowCloseButtonHint;
+	w.setWindowFlags(flags);
+
     w.show();
     return a.exec();
 }

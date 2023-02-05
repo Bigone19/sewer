@@ -1,5 +1,11 @@
 #include "docxutils.h"
 
-DocxUtils::DocxUtils()
+using namespace DocxUtils;
+
+CDocxUtils::CDocxUtils()
+{
+}
+
+CDocxUtils::~CDocxUtils()
 {
 }
