@@ -1,4 +1,4 @@
-QT       += core gui network concurrent testlib
+QT       += core gui network concurrent testlib xml
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -30,20 +30,20 @@ TRANSLATIONS += \
 CONFIG += lrelease
 CONFIG += embed_translations
 
-INCLUDEPATH+=../opencv/build/include \
-             ../opencv/build/include/opencv \
-             ../opencv/build/include/opencv2 \
-             ../Microsoft.ML.OnnxRuntime.1.10.0/build/native/include \
+INCLUDEPATH+=./opencv/build/include \
+             ./opencv/build/include/opencv \
+             ./opencv/build/include/opencv2 \
+             ./Microsoft.ML.OnnxRuntime.1.10.0/build/native/include \
              ./docx_include
-DEPENDPATH+=../opencv/build/include \
-            ../opencv/build/include/opencv \
-            ../opencv/build/include/opencv2 \
-            ../Microsoft.ML.OnnxRuntime.1.10.0/build/native/include \
+DEPENDPATH+=./opencv/build/include \
+            ./opencv/build/include/opencv \
+            ./opencv/build/include/opencv2 \
+            ./Microsoft.ML.OnnxRuntime.1.10.0/build/native/include \
             ./docx_include
-LIBS += -L../opencv/build/x64/vc15/lib \
+LIBS += -L./opencv/build/x64/vc15/lib \
         -lopencv_world452d \
         -lopencv_world452\
-        -L../Microsoft.ML.OnnxRuntime.1.10.0/runtimes/win-x64/native \
+        -L./Microsoft.ML.OnnxRuntime.1.10.0/runtimes/win-x64/native \
         -lonnxruntime \
         -L./docx_runtimes \
         -ldocxlib

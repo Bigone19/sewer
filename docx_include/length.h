@@ -3,7 +3,7 @@
 
 #include "docx_global.h"
 
-namespace Docx {
+namespace DocxUtils {
 class DOCX_EXPORT Length
 {
 public:

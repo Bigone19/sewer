@@ -9,7 +9,7 @@
 
 class QIODevice;
 
-namespace Docx {
+namespace DocxUtils {
 class Paragraph;
 class Table;
 class DocumentPart;

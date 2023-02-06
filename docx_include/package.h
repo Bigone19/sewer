@@ -8,7 +8,7 @@
 #include <QList>
 #include <QImage>
 
-namespace Docx {
+namespace DocxUtils {
 
 class ImagePart;
 class ImageParts;

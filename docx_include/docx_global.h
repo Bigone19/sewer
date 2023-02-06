@@ -10,7 +10,7 @@
 #endif
 
 /*!
- * \defgroup Docx 操作微软docx文件的模块.
+ * \defgroup DocxUtils 操作微软docx文件的模块.
  *
  *
  */

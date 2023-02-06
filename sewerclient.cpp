@@ -49,6 +49,10 @@ bool SewerClient::imgDetect()
 {
 	try
 	{
+		m_docx = new CDocx("default.docx");
+		Table* table = m_docx->addTable(3, 3);
+		table->setAlignment(WD_TABLE_ALIGNMENT::HIGHKASHIDA);
+		m_docx->save("default.docx");
 		m_detector = new CDetector();
 		if (m_clsNames.empty())
 		{
@@ -70,8 +74,9 @@ bool SewerClient::imgDetect()
 				auto& resCls = m_detectResVec.at(0);
 				imgName +=(m_clsNames.at(resCls.first) + "." + info.suffix().toStdString());
 				m_detector->imgName2ResName(imgName, dstImgPath);
-
+				// 写入图片 [2/6/2023]
 				imwrite(dstImgPath, dstImg);
+
 			}
 			catch (const cv::Exception& e)
 			{

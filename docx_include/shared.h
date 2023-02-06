@@ -6,7 +6,7 @@
 #include <QImage>
 #include <QException>
 
-namespace Docx
+namespace DocxUtils
 {
 
 QDomElement addOrAssignElement(QDomDocument *dom, QDomElement *parent, const QString &eleName, bool addToFirst = false);

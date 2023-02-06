@@ -9,7 +9,7 @@
 #include <QDomDocument>
 #include <QSharedPointer>
 
-namespace Docx {
+namespace DocxUtils {
 class DocumentPart;
 class Paragraph;
 class Column;

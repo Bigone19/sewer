@@ -5,6 +5,8 @@
 #include <QFileDialog>
 // update [2/2/2023 ]
 #include "onnxDetector.h"
+// docx [2/6/2023]
+#include "docxUtils.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class SewerClient; }
@@ -54,5 +56,7 @@ private:
     QStringList m_fileList;     // 选择文件列表 [2/4/2023]
     QFileInfoList m_lstFileInfo;
     vector<string> m_clsNames;  // 类别名称列表 [2/5/2023]
+
+    CDocx* m_docx;
 };
 #endif // SEWERCLIENT_H

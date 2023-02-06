@@ -13,7 +13,7 @@
 
 class QDomDocument;
 
-namespace Docx {
+namespace DocxUtils {
 class Run;
 class Text;
 class CT_RPr;
