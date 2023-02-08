@@ -11,18 +11,21 @@
 
 #include "document.h"
 #include "table.h"
+#include "parts/documentpart.h"
 
-using namespace DocxUtils;
 using std::string;
 
-class CDocx : public Document
+namespace DocxUtils
 {
-public:
-	CDocx();
-	explicit CDocx(const string& fileName);
-	virtual ~CDocx();
+	/**
+	* @brief: docx添加模板表格
+	* @param: 
+	* @date: 2023/02/09
+	*/
+	Table* addTemplateTable(Document* pDoc,
+		const string& imgPath, const string& defectName);
+}
 
-private:
-};
+
 
 #endif // !__DOCXUTILS_H__

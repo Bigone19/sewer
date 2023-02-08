@@ -1,15 +1,13 @@
 #include "docxUtils.h"
 
-
-CDocx::CDocx() : Document()
+namespace DocxUtils
 {
-}
-
-CDocx::CDocx(const string& fileName)
-	: Document(QString::fromStdString(fileName))
-{
-}
-
-CDocx::~CDocx()
-{
+	Table* addTemplateTable(Document* pDoc, 
+		const string& imgPath, const string& defectName)
+	{
+		Table* pTable = pDoc->addTable(11, 6);
+		Cell* pCell = pTable->getCell(9, 0);
+		pCell->addImage(imgPath);
+		return pTable;
+	}
 }

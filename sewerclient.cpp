@@ -1,6 +1,9 @@
 #include "sewerclient.h"
 #include "ui_sewerclient.h"
 
+// 测试docx [2/8/2023]
+#define TEST_DOCX 1
+
 SewerClient::SewerClient(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::SewerClient)
@@ -49,10 +52,6 @@ bool SewerClient::imgDetect()
 {
 	try
 	{
-		m_docx = new CDocx("default.docx");
-		Table* table = m_docx->addTable(3, 3);
-		table->setAlignment(WD_TABLE_ALIGNMENT::HIGHKASHIDA);
-		m_docx->save("default.docx");
 		m_detector = new CDetector();
 		if (m_clsNames.empty())
 		{
@@ -70,13 +69,25 @@ bool SewerClient::imgDetect()
 				Mat dstImg = srcImg.clone();
 				qDebug() << QString::fromLocal8Bit("detecting image: %1").arg(QString::fromStdString(imgName));
 				m_detectResVec = m_detector->getDetectRes(srcImg);
-				// 文件名添加检测类别 [2/5/2023]
+				// 检测到置信值最高的缺陷类别（后续需要更新到可根据用户需求更改） [2/9/2023]
 				auto& resCls = m_detectResVec.at(0);
-				imgName +=(m_clsNames.at(resCls.first) + "." + info.suffix().toStdString());
+				// 检测到缺陷类别名称 [2/9/2023]
+				string defectName = m_clsNames.at(resCls.first);
+				// 图片文件后缀名 [2/9/2023]
+				string suffixName = info.suffix().toStdString();
+				// 文件名添加检测类别 [2/5/2023]
+				imgName +=(defectName + "." + suffixName);
 				m_detector->imgName2ResName(imgName, dstImgPath);
 				// 写入图片 [2/6/2023]
 				imwrite(dstImgPath, dstImg);
-
+#if TEST_DOCX
+				m_docx = new Document("default.docx");
+				Table* table = addTemplateTable(m_docx, dstImgPath, "");
+				Cell* cell = table->getCell(0, 0);
+				cell->addImage(dstImgPath);
+				
+				m_docx->save("default.docx");
+#endif // TEST_DOCX
 			}
 			catch (const cv::Exception& e)
 			{

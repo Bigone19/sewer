@@ -8,6 +8,8 @@
 // docx [2/6/2023]
 #include "docxUtils.h"
 
+using namespace DocxUtils;
+
 QT_BEGIN_NAMESPACE
 namespace Ui { class SewerClient; }
 QT_END_NAMESPACE
@@ -57,6 +59,6 @@ private:
     QFileInfoList m_lstFileInfo;
     vector<string> m_clsNames;  // 类别名称列表 [2/5/2023]
 
-    CDocx* m_docx;
+    Document* m_docx;
 };
 #endif // SEWERCLIENT_H

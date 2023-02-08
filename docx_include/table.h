@@ -9,6 +9,8 @@
 #include <QDomDocument>
 #include <QSharedPointer>
 
+using std::string;
+
 namespace DocxUtils {
 class DocumentPart;
 class Paragraph;
@@ -22,7 +24,12 @@ class DOCX_EXPORT Table
 public:
 
     Table(DocumentPart *part, const QDomElement &element);    
-    Cell* cell(int rowIndex, int colIndex);
+    /**
+    * @brief: 返回单元格
+    * @param: 
+    * @date: 2023/02/08
+    */
+    Cell* getCell(int rowIndex, int colIndex);
     Row* addRow();    
     Column* addColumn();
     QList<Cell*> rowCells(int rowIndex);
@@ -54,7 +61,12 @@ public:
     int rowIndex();
     Table *table();
     virtual ~Cell();
-
+    /**
+    * @brief: 单元格内插入图片
+    * @param: 
+    * @date: 2023/02/09
+    */
+    void addImage(const string& imgPath);
 private:
     QDomDocument *m_dom;
     DocumentPart *m_part;    

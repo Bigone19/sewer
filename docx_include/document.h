@@ -42,7 +42,7 @@ private:
     void open(const QString& name);
     void open(QIODevice* device);
 
-private:
+protected:
     DocumentPart *m_docPart;
     Package *m_package;
 
