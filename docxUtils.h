@@ -12,7 +12,7 @@
 #include "document.h"
 
 using std::string;
-
+using std::vector;
 namespace DocxUtils
 {
 	class DocumentPart;
@@ -27,11 +27,11 @@ namespace DocxUtils
 		explicit CDox(const string& docxPath);
 		~CDox();
 		/**
-		* @brief: 
+		* @brief: Ìí¼ÓÄ£°å
 		* @param: 
 		* @date: 2023/02/10
 		*/
-		Table* addTemplateTable(const string& imgPath, const string& defectName);
+		Table* addTemplate(const string& imgPath, const string& defectName);
 	};
 }
 

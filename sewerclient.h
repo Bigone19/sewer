@@ -49,6 +49,12 @@ private:
     * @date: 2023/02/04
     */
     void setImgInfo();
+    /**
+    * @brief: 遍历图片并写入docx
+    * @param: 
+    * @date: 2023/02/10
+    */
+    void writeDocx();
 private:
     Ui::SewerClient *ui;
 

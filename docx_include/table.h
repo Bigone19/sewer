@@ -10,6 +10,7 @@
 #include <QSharedPointer>
 
 using std::string;
+using std::vector;
 
 namespace DocxUtils {
 class DocumentPart;
@@ -57,6 +58,13 @@ public:
     void addText(const QString &text);
     Table *addTable(int rows, int cols, const QString &style = QString::fromLatin1("TableGrid"));
     Cell *merge(Cell *other);
+    /**
+    * @brief: 合并多个单元格
+    * @param: 
+    * @date: 2023/02/10
+    */
+    Cell* mergeMutliCell(vector<Cell*>& vecCell);
+
     int cellIndex();
     int rowIndex();
     Table *table();

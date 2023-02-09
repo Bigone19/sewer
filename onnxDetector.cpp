@@ -96,7 +96,7 @@ vector<pair<size_t, float>> CDetector::getDetectRes(Mat& srcImage)
 	}
 	std::sort(indexValuePairs.begin(), indexValuePairs.end(), [](const auto& lhs, const auto& rhs) { return lhs.second > rhs.second; });
 
-	for (size_t i = 0; i < 4; ++i)
+	for (size_t i = 0; i < 5; ++i)
 	{
 		const auto& result = indexValuePairs[i];
 		qDebug() << i + 1 << ": " << QString::fromLocal8Bit(m_clsNameVec[result.first]) << " " << result.second;
