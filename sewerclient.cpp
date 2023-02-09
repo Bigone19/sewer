@@ -1,5 +1,6 @@
 #include "sewerclient.h"
 #include "ui_sewerclient.h"
+#include "table.h"
 
 // 测试docx [2/8/2023]
 #define TEST_DOCX 1
@@ -81,11 +82,8 @@ bool SewerClient::imgDetect()
 				// 写入图片 [2/6/2023]
 				imwrite(dstImgPath, dstImg);
 #if TEST_DOCX
-				m_docx = new Document("default.docx");
-				Table* table = addTemplateTable(m_docx, dstImgPath, "");
-				Cell* cell = table->getCell(0, 0);
-				cell->addImage(dstImgPath);
-				
+				m_docx = new CDox("default.docx");
+				Table* pTable = m_docx->addTemplateTable(dstImgPath, "");
 				m_docx->save("default.docx");
 #endif // TEST_DOCX
 			}

@@ -20,7 +20,7 @@ class ImagePart;
 class ImageParts;
 class InlineShape;
 
-class DocumentPart : public Part
+class DOCX_EXPORT DocumentPart : public Part
 {
 public:
     DocumentPart(const QString &partName, const QString &contentType, const QByteArray &blob = QByteArray(), Package *package = nullptr);

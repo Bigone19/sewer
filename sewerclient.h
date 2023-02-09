@@ -59,6 +59,6 @@ private:
     QFileInfoList m_lstFileInfo;
     vector<string> m_clsNames;  // 类别名称列表 [2/5/2023]
 
-    Document* m_docx;
+    CDox* m_docx;   // 写入docx [2/10/2023]
 };
 #endif // SEWERCLIENT_H
