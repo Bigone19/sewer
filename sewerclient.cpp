@@ -60,6 +60,8 @@ bool SewerClient::imgDetect()
 		writeDocx();
 		// 清空文件列表 [2/10/2023]
 		m_lstFileInfo.clear();
+		ui->filePostion->clear();
+		ui->btnDetect->setEnabled(false);
 	}
 	catch (const std::exception& e)
 	{

@@ -30,8 +30,8 @@ namespace DocxUtils
 		// 表格内添加缺陷图片 [2/10/2023]
 		Cell* pCell = pTable->getCell(9, 0);
 		vector<Cell*> vecCell = { pTable->getCell(9, 1), pTable->getCell(9, 2) };
-		pCell = pCell->mergeMutliCell(vecCell);
 		pCell->addImage(imgPath);
+		pCell->mergeMutliCell(vecCell);
 		return pTable;
 	}
 

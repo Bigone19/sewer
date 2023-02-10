@@ -41,7 +41,12 @@ public:
     Paragraph* insertParagraphBefore(const QString &text, const QString &style = QString());
 
     virtual ~Paragraph();
-
+    /**
+    * @brief: 获取文字块列表
+    * @param: 
+    * @date: 2023/02/11
+    */
+    QList<Run*> getRuns();
 private:
     DocumentPart *m_part;
     QDomDocument *m_dom;
