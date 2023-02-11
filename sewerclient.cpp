@@ -10,6 +10,7 @@ SewerClient::SewerClient(QWidget *parent)
 
     ui->setupUi(this);
 	ui->btnDetect->setEnabled(false);
+	ui->filePostion->setEnabled(false);
 }
 
 SewerClient::~SewerClient()
@@ -27,9 +28,15 @@ void SewerClient::on_btnSelectFile_clicked()
 	if (m_fileList.size() > 0)
 	{
 		setImgInfo(); // 配置选择图片信息 [2/4/2023]
-		QString fileDirPath = m_fileList.at(0).left(m_fileList.at(0).lastIndexOf("/") + 1);
-		ui->filePostion->setText(fileDirPath);
-		if (!fileDirPath.isEmpty())
+		// 文本框显示 [2/11/2023]
+		if (m_fileList.size() != 1)
+		{
+			QString fileDirPath = m_fileList.at(0).left(m_fileList.at(0).lastIndexOf("/") + 1);
+			ui->filePostion->setText(fileDirPath);
+		}
+		ui->filePostion->setText(m_fileList.at(0));
+
+		if (!m_fileList.at(0).isEmpty())
 		{
 			ui->btnDetect->setEnabled(true);
 		}
@@ -60,6 +67,7 @@ bool SewerClient::imgDetect()
 		writeDocx();
 		// 清空文件列表 [2/10/2023]
 		m_lstFileInfo.clear();
+		// 清空文本框 [2/11/2023]
 		ui->filePostion->clear();
 		ui->btnDetect->setEnabled(false);
 	}
