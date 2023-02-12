@@ -53,6 +53,7 @@ namespace fileUtils
 	* @return:
 	* 格式: [0]: 原始图片路径;[1]处理完成后备份图片路径;
 	* [2]: 权重文件夹路径;[3]: 处理结果路径;[4]: 类别名称路径
+	* [5]: docx结果位置
 	*/
 	vector<QString> loadInitFile(const string& initialFilePath);
 }

@@ -380,3 +380,6 @@ FodyWeavers.xsd
 /opencv
 /default.docx
 /defaultzh_CN.docx
+/.qmake.stash
+/sewer.sln
+/ui_sewerclient.h

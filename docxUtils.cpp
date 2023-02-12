@@ -2,13 +2,15 @@
 #include "parts/documentpart.h"
 #include "table.h"
 
+#include <QFile>
+
 namespace DocxUtils
 {
 	CDox::CDox() : Document()
 	{
 	}
-	CDox::CDox(const string& docxPath)
-		: Document(QString::fromStdString(docxPath))
+	CDox::CDox(const QString& docxPath)
+		: Document(docxPath)
 	{
 	}
 	CDox::~CDox()

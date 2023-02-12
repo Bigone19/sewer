@@ -38,7 +38,7 @@ public:
 
     void save(const QString& path);
 
-private:
+protected:
     void open(const QString& name);
     void open(QIODevice* device);
 

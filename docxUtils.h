@@ -24,7 +24,7 @@ namespace DocxUtils
 	{
 	public:
 		CDox();
-		explicit CDox(const string& docxPath);
+		explicit CDox(const QString& docxPath);
 		~CDox();
 		/**
 		* @brief: Ìí¼ÓÄ£°å

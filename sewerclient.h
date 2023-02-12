@@ -7,8 +7,6 @@
 #include "onnxDetector.h"
 // docx [2/6/2023]
 #include "docxUtils.h"
-// 新建项目弹窗 [2/12/2023]
-#include "projectcfg.h"
 
 using namespace DocxUtils;
 
@@ -16,12 +14,13 @@ QT_BEGIN_NAMESPACE
 namespace Ui { class SewerClient; }
 QT_END_NAMESPACE
 
+class projectCfg;
 class SewerClient : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    SewerClient(QWidget *parent = nullptr);
+    SewerClient(QWidget* parent = nullptr);
     ~SewerClient();
 
 private slots:
@@ -63,6 +62,18 @@ private:
     * @date: 2023/02/10
     */
     void writeDocx();
+    /**
+    * @brief: 设置docx结果路径
+    * @param: 
+    * @date: 2023/02/12
+    */
+    void setDocxPath();
+    /**
+    * @brief: docx写入项目文件夹
+    * @param: 
+    * @date: 2023/02/12
+    */
+    void writeProjectDocx();
 private:
     Ui::SewerClient *ui;
 
@@ -75,6 +86,10 @@ private:
 
     CDox* m_docx;   // 写入docx [2/10/2023]
 
+    QString m_docxName;     // docx文件名 [2/12/2023]
+    QString m_docxDirPath;  // docx结果文件夹路径 [2/12/2023]
     projectCfg* m_wProject; // 弹出项目窗口 [2/12/2023]
+
+    friend class projectCfg;
 };
 #endif // SEWERCLIENT_H

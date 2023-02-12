@@ -2,17 +2,20 @@
 #include "ui_sewerclient.h"
 #include "table.h"
 
+#include "projectcfg.h"
+
 SewerClient::SewerClient(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::SewerClient)
 {
 	m_clsNames.clear();
+	setDocxPath();
 
     ui->setupUi(this);
-	ui->btnDetect->setEnabled(false);
 	ui->filePostion->setEnabled(false);
-	// 添加项目弹窗 [2/12/2023]
-	m_wProject = new projectCfg();
+	ui->btnDetect->setEnabled(false);
+	// 未创建项目名称前不能上传图片 [2/12/2023]
+	ui->btnSelectFile->setEnabled(false);
 }
 
 SewerClient::~SewerClient()
@@ -98,6 +101,10 @@ void SewerClient::setImgInfo()
 
 void SewerClient::writeDocx()
 {
+	// 新建项目名称docx文件 [2/12/2023]
+	m_docxName = (m_wProject->m_projectName + ".docx");
+	m_docx = new CDox(m_docxName);
+
 	for (QFileInfo& info : m_lstFileInfo)
 	{
 		string imgPath = info.absoluteFilePath().toStdString(); // 待检测图片绝对路径 [2/4/2023]
@@ -120,10 +127,12 @@ void SewerClient::writeDocx()
 			m_detector->imgName2ResName(imgName, dstImgPath);
 			// 写入图片 [2/6/2023]
 			imwrite(dstImgPath, dstImg);
-			// 写入docx [2/10/2023]
-			m_docx = new CDox("default.docx");
+			// docx写入项目文件夹 [2/12/2023]
+#if 1
+			//m_docx = new CDox("default.docx");
 			Table* pTable = m_docx->addTemplate(dstImgPath, defectName);
-			m_docx->save("default.docx");
+			m_docx->save(m_docxName);
+#endif
 		}
 		catch (const cv::Exception& e)
 		{
@@ -133,10 +142,32 @@ void SewerClient::writeDocx()
 	}
 }
 
+void SewerClient::setDocxPath()
+{
+	QString dirPath = g_vecDirPath.at(5);
+	if (dirPath.isEmpty())
+	{
+		qDebug() << __FUNCTION__ << ERROR_CODE_1;
+		return;
+	}
+	QDir tmpDir(dirPath);
+	if (!tmpDir.exists())
+	{
+		tmpDir.mkdir(dirPath);
+		qDebug() << __FUNCTION__ << QString::fromLocal8Bit("已设置docx结果路径 ");
+	}
+	m_docxDirPath = dirPath;
+}
+
+void SewerClient::writeProjectDocx()
+{
+
+}
 
 void SewerClient::on_btnNewProject_clicked()
 {
 	// 添加项目弹窗 [2/12/2023]
+	m_wProject = new projectCfg(this);
 	Qt::WindowFlags flags = Qt::Dialog;
 	m_wProject->setWindowFlags(flags);
 	m_wProject->show();
