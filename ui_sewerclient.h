@@ -27,6 +27,8 @@ class Ui_SewerClient
 public:
     QWidget *centralwidget;
     QWidget *widget;
+    QVBoxLayout *verticalLayout_2;
+    QPushButton *btnNewProject;
     QVBoxLayout *verticalLayout;
     QHBoxLayout *horizontalLayout;
     QLineEdit *filePostion;
@@ -39,15 +41,22 @@ public:
     {
         if (SewerClient->objectName().isEmpty())
             SewerClient->setObjectName(QString::fromUtf8("SewerClient"));
-        SewerClient->resize(654, 712);
+        SewerClient->resize(414, 480);
         centralwidget = new QWidget(SewerClient);
         centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
         widget = new QWidget(centralwidget);
         widget->setObjectName(QString::fromUtf8("widget"));
-        widget->setGeometry(QRect(0, 0, 642, 680));
-        verticalLayout = new QVBoxLayout(widget);
+        widget->setGeometry(QRect(10, 10, 391, 441));
+        verticalLayout_2 = new QVBoxLayout(widget);
+        verticalLayout_2->setObjectName(QString::fromUtf8("verticalLayout_2"));
+        verticalLayout_2->setContentsMargins(0, 0, 0, 0);
+        btnNewProject = new QPushButton(widget);
+        btnNewProject->setObjectName(QString::fromUtf8("btnNewProject"));
+
+        verticalLayout_2->addWidget(btnNewProject);
+
+        verticalLayout = new QVBoxLayout();
         verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
-        verticalLayout->setContentsMargins(0, 0, 0, 0);
         horizontalLayout = new QHBoxLayout();
         horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
         filePostion = new QLineEdit(widget);
@@ -70,9 +79,12 @@ public:
 
         labelImgDisplay = new QLabel(widget);
         labelImgDisplay->setObjectName(QString::fromUtf8("labelImgDisplay"));
-        labelImgDisplay->setMinimumSize(QSize(640, 640));
+        labelImgDisplay->setMinimumSize(QSize(320, 320));
 
         verticalLayout->addWidget(labelImgDisplay);
+
+
+        verticalLayout_2->addLayout(verticalLayout);
 
         SewerClient->setCentralWidget(centralwidget);
         statusbar = new QStatusBar(SewerClient);
@@ -87,6 +99,7 @@ public:
     void retranslateUi(QMainWindow *SewerClient)
     {
         SewerClient->setWindowTitle(QCoreApplication::translate("SewerClient", "SewerClient", nullptr));
+        btnNewProject->setText(QCoreApplication::translate("SewerClient", "\346\226\260\345\273\272\351\241\271\347\233\256", nullptr));
         btnSelectFile->setText(QCoreApplication::translate("SewerClient", "\351\200\211\346\213\251\346\226\207\344\273\266", nullptr));
         btnDetect->setText(QCoreApplication::translate("SewerClient", "\345\274\200\345\247\213\346\243\200\346\265\213", nullptr));
         labelImgDisplay->setText(QCoreApplication::translate("SewerClient", "TextLabel", nullptr));

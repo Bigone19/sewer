@@ -7,6 +7,8 @@
 #include "onnxDetector.h"
 // docx [2/6/2023]
 #include "docxUtils.h"
+// 新建项目弹窗 [2/12/2023]
+#include "projectcfg.h"
 
 using namespace DocxUtils;
 
@@ -35,6 +37,12 @@ private slots:
     * @date: 2023/02/03
     */
     void on_btnDetect_clicked();
+    /**
+    * @brief: 添加新工程
+    * @param: 
+    * @date: 2023/02/12
+    */
+    void on_btnNewProject_clicked();
 
 private:
     /**
@@ -66,5 +74,7 @@ private:
     vector<string> m_clsNames;  // 类别名称列表 [2/5/2023]
 
     CDox* m_docx;   // 写入docx [2/10/2023]
+
+    projectCfg* m_wProject; // 弹出项目窗口 [2/12/2023]
 };
 #endif // SEWERCLIENT_H

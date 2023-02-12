@@ -11,6 +11,8 @@ SewerClient::SewerClient(QWidget *parent)
     ui->setupUi(this);
 	ui->btnDetect->setEnabled(false);
 	ui->filePostion->setEnabled(false);
+	// 添加项目弹窗 [2/12/2023]
+	m_wProject = new projectCfg();
 }
 
 SewerClient::~SewerClient()
@@ -18,6 +20,7 @@ SewerClient::~SewerClient()
 	m_detectResVec.clear();
 	m_clsNames.clear();
     m_fileList.clear();
+	delete m_wProject;
     delete ui;
 }
 
@@ -128,5 +131,14 @@ void SewerClient::writeDocx()
 			continue;
 		}
 	}
+}
+
+
+void SewerClient::on_btnNewProject_clicked()
+{
+	// 添加项目弹窗 [2/12/2023]
+	Qt::WindowFlags flags = Qt::Dialog;
+	m_wProject->setWindowFlags(flags);
+	m_wProject->show();
 }
 

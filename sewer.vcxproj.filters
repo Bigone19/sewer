@@ -69,6 +69,9 @@
     <ClCompile Include="onnxUtils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="projectcfg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="sewerclient.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -86,6 +89,9 @@
     <ClInclude Include="onnxUtils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <CustomBuild Include="projectcfg.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
     <CustomBuild Include="sewerclient.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
@@ -103,6 +109,12 @@
     <CustomBuild Include="release\moc_predefs.h.cbt">
       <Filter>Generated Files</Filter>
     </CustomBuild>
+    <ClCompile Include="debug\moc_projectcfg.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="release\moc_projectcfg.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
     <ClCompile Include="debug\moc_sewerclient.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -115,6 +127,9 @@
     <ClCompile Include="release\qrc_qmake_qmake_qm_files.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClInclude Include="ui_projectcfg.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
     <ClInclude Include="ui_sewerclient.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
@@ -125,6 +140,9 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
+    <CustomBuild Include="projectcfg.ui">
+      <Filter>Form Files</Filter>
+    </CustomBuild>
     <CustomBuild Include="sewerclient.ui">
       <Filter>Form Files</Filter>
     </CustomBuild>

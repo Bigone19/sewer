@@ -10,12 +10,14 @@ CONFIG += c++14
 
 SOURCES += \
     main.cpp \
+    projectcfg.cpp \
     sewerclient.cpp \
     onnxDetector.cpp \
     onnxUtils.cpp \
     docxUtils.cpp
 
 HEADERS += \
+    projectcfg.h \
     sewerclient.h \
     onnxDetector.h \
     onnxUtils.h \
@@ -23,6 +25,7 @@ HEADERS += \
     docxUtils.h
 
 FORMS += \
+    projectcfg.ui \
     sewerclient.ui
 
 TRANSLATIONS += \
