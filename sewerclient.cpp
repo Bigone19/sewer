@@ -103,7 +103,7 @@ void SewerClient::writeDocx()
 {
 	// 新建项目名称docx文件 [2/12/2023]
 	m_docxName = (m_wProject->m_projectName + ".docx");
-	m_docx = new CDox(m_docxName);
+	m_docx = new CDox("default.docx");
 
 	for (QFileInfo& info : m_lstFileInfo)
 	{
