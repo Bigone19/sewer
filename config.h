@@ -12,8 +12,10 @@
 #define ERROR_CODE_7    QString::fromLocal8Bit("加载类别文件错误：没有找到类别名称文件 ") 
 #define ERROR_CODE_8    QString::fromLocal8Bit("ONNX检测器加载失败 ") 
 #define ERROR_CODE_9    QString::fromLocal8Bit("图片路径错误 ") 
+#define ERROR_CODE_10    QString::fromLocal8Bit("创建项目文件夹失败 ") 
 
 // 成功信息 [2/4/2023]
 #define SUCCEED_CODE_1    QString::fromLocal8Bit("ONNX检测器初始化成功 ")
+#define SUCCEED_CODE_2    QString::fromLocal8Bit("创建项目文件夹成功 ") 
 
 #endif

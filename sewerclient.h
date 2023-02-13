@@ -69,11 +69,11 @@ private:
     */
     void setDocxPath();
     /**
-    * @brief: docx写入项目文件夹
+    * @brief: 创建项目文件夹
     * @param: 
     * @date: 2023/02/12
     */
-    void writeProjectDocx();
+    void setProjectDir();
 private:
     Ui::SewerClient *ui;
 
@@ -86,9 +86,10 @@ private:
 
     CDox* m_docx;   // 写入docx [2/10/2023]
 
-    QString m_docxName;     // docx文件名 [2/12/2023]
-    QString m_docxDirPath;  // docx结果文件夹路径 [2/12/2023]
-    projectCfg* m_wProject; // 弹出项目窗口 [2/12/2023]
+    QString m_docxName;         // docx文件名 [2/12/2023]
+    QString m_docxDirPath;      // docx结果文件夹路径 [2/12/2023]
+    QString m_projectDirPath;   // 项目文件夹路径 [2/14/2023]
+    projectCfg* m_wProject;     // 弹出项目窗口 [2/12/2023]
 
     friend class projectCfg;
 };

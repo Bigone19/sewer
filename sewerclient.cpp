@@ -1,8 +1,9 @@
 #include "sewerclient.h"
 #include "ui_sewerclient.h"
 #include "table.h"
-
 #include "projectcfg.h"
+
+#include <QDateTime>
 
 SewerClient::SewerClient(QWidget *parent)
     : QMainWindow(parent)
@@ -101,8 +102,11 @@ void SewerClient::setImgInfo()
 
 void SewerClient::writeDocx()
 {
-	// 新建项目名称docx文件 [2/12/2023]
-	m_docxName = (m_wProject->m_projectName + ".docx");
+	// 项目对应的docx文件名称 [2/12/2023]
+	QString currTime = QDateTime::currentDateTime().toString("yyyyMMdd_hh:mm");
+	setProjectDir();
+	m_docxName = (m_projectDirPath + "/" + m_wProject->m_projectName + ".docx");
+	// 打开docx模板 [2/14/2023]
 	m_docx = new CDox("default.docx");
 
 	for (QFileInfo& info : m_lstFileInfo)
@@ -129,7 +133,6 @@ void SewerClient::writeDocx()
 			imwrite(dstImgPath, dstImg);
 			// docx写入项目文件夹 [2/12/2023]
 #if 1
-			//m_docx = new CDox("default.docx");
 			Table* pTable = m_docx->addTemplate(dstImgPath, defectName);
 			m_docx->save(m_docxName);
 #endif
@@ -159,9 +162,24 @@ void SewerClient::setDocxPath()
 	m_docxDirPath = dirPath;
 }
 
-void SewerClient::writeProjectDocx()
+void SewerClient::setProjectDir()
 {
-
+	QString currTime = QDateTime::currentDateTime().toString("yyyyMMdd");
+	QString dirPath = m_docxDirPath + m_wProject->m_projectName + "_" + currTime;
+	QDir tmpDir(dirPath);
+	if (!tmpDir.exists())
+	{
+		// 创建项目文件夹 [2/14/2023]
+		if (!tmpDir.mkdir(dirPath))
+		{
+			qDebug() << __FUNCTION__ << ERROR_CODE_10;
+		}
+		else
+		{
+			qDebug() << __FUNCTION__ << SUCCEED_CODE_2;
+		}
+	}
+	m_projectDirPath = dirPath;
 }
 
 void SewerClient::on_btnNewProject_clicked()
