@@ -74,6 +74,12 @@ private:
     * @date: 2023/02/12
     */
     void setProjectDir();
+    /**
+    * @brief: 自适应比例缩放图片
+    * @param: 
+    * @date: 2023/02/16
+    */
+    void autoScaleImg(Mat& srcImg);
 private:
     Ui::SewerClient *ui;
 
@@ -90,6 +96,8 @@ private:
     QString m_docxDirPath;      // docx结果文件夹路径 [2/12/2023]
     QString m_projectDirPath;   // 项目文件夹路径 [2/14/2023]
     projectCfg* m_wProject;     // 弹出项目窗口 [2/12/2023]
+
+    bool m_isDetect;            // 是否点击检测按钮 [2/16/2023]
 
     friend class projectCfg;
 };

@@ -8,6 +8,7 @@
 SewerClient::SewerClient(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::SewerClient)
+	, m_isDetect(false)
 {
 	m_clsNames.clear();
 	setDocxPath();
@@ -58,6 +59,7 @@ void SewerClient::on_btnDetect_clicked()
 		qDebug() << ERROR_CODE_8 << Qt::endl;
 		return;
 	}
+	m_isDetect = true;
 }
 
 bool SewerClient::imgDetect()
@@ -129,13 +131,12 @@ void SewerClient::writeDocx()
 			// 文件名添加检测类别 [2/5/2023]
 			imgName += (defectName + "." + suffixName);
 			m_detector->imgName2ResName(imgName, dstImgPath);
+			// resize [2/16/2023]
+			autoScaleImg(dstImg);
 			// 写入图片 [2/6/2023]
 			imwrite(dstImgPath, dstImg);
 			// docx写入项目文件夹 [2/12/2023]
-#if 1
 			Table* pTable = m_docx->addTemplate(dstImgPath, defectName);
-			m_docx->save(m_docxName);
-#endif
 		}
 		catch (const cv::Exception& e)
 		{
@@ -143,6 +144,7 @@ void SewerClient::writeDocx()
 			continue;
 		}
 	}
+	m_docx->save(m_docxName);
 }
 
 void SewerClient::setDocxPath()
@@ -180,6 +182,16 @@ void SewerClient::setProjectDir()
 		}
 	}
 	m_projectDirPath = dirPath;
+}
+
+void SewerClient::autoScaleImg(Mat& srcImg)
+{
+	double w = srcImg.cols / 1.0f;
+	double h = srcImg.rows / 1.0f;
+	Size resizeScale(320, 320);
+	double imgScale = w >= h ? (h / w) : (w / h);
+	w >= h ? resizeScale.height *= imgScale : resizeScale.width *= imgScale;
+	cv::resize(srcImg, srcImg, resizeScale);
 }
 
 void SewerClient::on_btnNewProject_clicked()

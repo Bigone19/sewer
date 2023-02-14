@@ -40,9 +40,7 @@ namespace DocxUtils
 
 		pTable->getCell(5, 0)->addText(QString::fromUtf8("检测地点"));
 		Cell* pCell = pTable->getCell(5, 1);
-		vector<Cell*> vecCell = { pTable->getCell(5, 2), pTable->getCell(5, 3), 
-			pTable->getCell(5, 4), pTable->getCell(5, 5)};
-		pCell->mergeMutliCell(vecCell);
+		pCell->merge(pTable->getCell(5, 5));
 
 		pTable->getCell(6, 0)->addText(QString::fromUtf8("距离(m)"));
 		pTable->getCell(6, 1)->addText(QString::fromUtf8("缺陷名称代码"));
@@ -53,27 +51,21 @@ namespace DocxUtils
 		
 		pTable->getCell(8, 0)->addText(QString::fromUtf8("备注"));
 		pCell = pTable->getCell(8, 1);
-		vecCell = { pTable->getCell(8, 2), pTable->getCell(8, 3)
-			, pTable->getCell(8, 4), pTable->getCell(8, 5) };
-		pCell->mergeMutliCell(vecCell);
+		pCell->merge(pTable->getCell(8, 5));
 
 		// 表格内添加缺陷图片 [2/10/2023]
 		pCell = pTable->getCell(9, 0);
-		vecCell = { pTable->getCell(9, 1), pTable->getCell(9, 2) };
 		pCell->addImage(imgPath);
-		pCell->mergeMutliCell(vecCell);
+		pCell->merge(pTable->getCell(9, 2));
 
 		pCell = pTable->getCell(9, 3);
-		vecCell = { pTable->getCell(9, 4), pTable->getCell(9, 5) };
-		pCell->mergeMutliCell(vecCell);
+		pCell->merge(pTable->getCell(9, 5));
 
-		pTable->getCell(10, 0)->addText(QString::fromUtf8("图片1"));
 		pCell = pTable->getCell(10, 0);
-		vecCell = { pTable->getCell(10, 1), pTable->getCell(10, 2) };
-		pCell->mergeMutliCell(vecCell);
+		pTable->getCell(10, 0)->addText(QString::fromUtf8("图片1"));
+		pCell->merge(pTable->getCell(10, 2));
 		pCell = pTable->getCell(10, 3);
-		vecCell = { pTable->getCell(10, 4), pTable->getCell(10, 5) };
-		pCell->mergeMutliCell(vecCell);
+		pCell->merge(pTable->getCell(10, 5));
 
 		return pTable;
 	}
