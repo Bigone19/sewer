@@ -49,6 +49,9 @@ namespace DocxUtils
 		pTable->getCell(6, 4)->addText(QString::fromUtf8("管段内部状况描述"));
 		pTable->getCell(6, 5)->addText(QString::fromUtf8("照片序号或说明"));
 		
+		pTable->getCell(7, 1)->addText(QString::fromStdString(defectName));
+		pTable->getCell(7, 5)->addText(QString::fromUtf8("照片1"));
+
 		pTable->getCell(8, 0)->addText(QString::fromUtf8("备注"));
 		pCell = pTable->getCell(8, 1);
 		pCell->merge(pTable->getCell(8, 5));
@@ -62,7 +65,7 @@ namespace DocxUtils
 		pCell->merge(pTable->getCell(9, 5));
 
 		pCell = pTable->getCell(10, 0);
-		pTable->getCell(10, 0)->addText(QString::fromUtf8("图片1"));
+		pTable->getCell(10, 0)->addText(QString::fromUtf8("照片1"));
 		pCell->merge(pTable->getCell(10, 2));
 		pCell = pTable->getCell(10, 3);
 		pCell->merge(pTable->getCell(10, 5));

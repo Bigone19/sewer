@@ -197,7 +197,7 @@ void SewerClient::autoScaleImg(Mat& srcImg)
 {
 	double w = srcImg.cols / 1.0f;
 	double h = srcImg.rows / 1.0f;
-	Size resizeScale(320, 320);
+	Size resizeScale(240, 240);
 	double imgScale = w >= h ? (h / w) : (w / h);
 	w >= h ? resizeScale.height *= imgScale : resizeScale.width *= imgScale;
 	cv::resize(srcImg, srcImg, resizeScale);
