@@ -1,4 +1,4 @@
-#include "sewerclient.h"
+﻿#include "sewerclient.h"
 #include "ui_sewerclient.h"
 #include "table.h"
 #include "projectcfg.h"
@@ -144,6 +144,8 @@ void SewerClient::writeDocx()
 			autoScaleImg(dstImg);
 			// 写入图片 [2/6/2023]
 			imwrite(dstImgPath, dstImg);
+			// 图片展示 [2/17/2023]
+			displayImg(dstImgPath);
 			// docx写入项目文件夹 [2/12/2023]
 			Table* pTable = m_docx->addTemplate(dstImgPath, defectName);
 		}
@@ -197,10 +199,15 @@ void SewerClient::autoScaleImg(Mat& srcImg)
 {
 	double w = srcImg.cols / 1.0f;
 	double h = srcImg.rows / 1.0f;
-	Size resizeScale(240, 240);
+	Size resizeScale(224, 224);
 	double imgScale = w >= h ? (h / w) : (w / h);
 	w >= h ? resizeScale.height *= imgScale : resizeScale.width *= imgScale;
 	cv::resize(srcImg, srcImg, resizeScale);
+}
+
+void SewerClient::displayImg(string& imgPath)
+{
+	ui->labelImgDisplay->setPixmap(QString::fromStdString(imgPath));
 }
 
 void SewerClient::on_btnNewProject_clicked()

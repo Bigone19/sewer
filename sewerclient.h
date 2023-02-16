@@ -80,6 +80,12 @@ private:
     * @date: 2023/02/16
     */
     void autoScaleImg(Mat& srcImg);
+    /**
+    * @brief: 展示检测后的图片
+    * @param: 
+    * @date: 2023/02/17
+    */
+    void displayImg(string& imgPath);
 private:
     Ui::SewerClient *ui;
 
