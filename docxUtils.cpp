@@ -19,10 +19,14 @@ namespace DocxUtils
 
 	Table* CDox::addTemplate(const string& imgPath, const string& defectName)
 	{
-		
+		// 获取图片文件名称 [2/16/2023]
+		size_t pos = imgPath.find_last_of('/');
+		string strImgName = imgPath.substr(pos + 1);
+
 		Table* pTable = this->addTable(11, 6);
 		// 添加表格表头 [2/10/2023]
 		pTable->getCell(0, 0)->addText(QString::fromUtf8("图像文件"));
+		pTable->getCell(0, 1)->addText(QString::fromStdString(strImgName));
 		pTable->getCell(0, 2)->addText(QString::fromUtf8("起始井号"));
 		pTable->getCell(0, 4)->addText(QString::fromUtf8("终止井号"));
 		pTable->getCell(1, 0)->addText(QString::fromUtf8("敷设年代"));

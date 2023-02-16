@@ -123,7 +123,7 @@ void SewerClient::writeDocx()
 	for (QFileInfo& info : m_lstFileInfo)
 	{
 		string imgPath = info.absoluteFilePath().toStdString(); // 待检测图片绝对路径 [2/4/2023]
-		string imgName = info.baseName().toStdString() + "_";		// 图片文件名称 [2/4/2023]
+		string imgName = info.baseName().toStdString();		// 图片文件名称 [2/4/2023]
 		string dstImgPath;		// 处理完成移动后图片路径 [2/4/2023]
 		try
 		{
@@ -138,7 +138,7 @@ void SewerClient::writeDocx()
 			// 图片文件后缀名 [2/9/2023]
 			string suffixName = info.suffix().toStdString();
 			// 文件名添加检测类别 [2/5/2023]
-			imgName += (defectName + "." + suffixName);
+			imgName += ("_" + defectName + "." + suffixName);
 			m_detector->imgName2ResName(imgName, dstImgPath);
 			// resize [2/16/2023]
 			autoScaleImg(dstImg);
