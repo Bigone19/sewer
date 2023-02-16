@@ -33,16 +33,24 @@ void SewerClient::on_btnSelectFile_clicked()
 {
 	QString filters = "file(*.jpg *.png *.dng *.JPEG *.jpeg)";
 	m_fileList = QFileDialog::getOpenFileNames(this, "打开文件", "", filters);
+	// 如果没有点击检测按钮则清空文件信息列表 [2/16/2023]
+	if (!m_isDetect)
+	{
+		m_lstFileInfo.clear();
+	}
 	if (m_fileList.size() > 0)
 	{
 		setImgInfo(); // 配置选择图片信息 [2/4/2023]
 		// 文本框显示 [2/11/2023]
-		if (m_fileList.size() != 1)
+		if (m_lstFileInfo.size() != 1)
 		{
 			QString fileDirPath = m_fileList.at(0).left(m_fileList.at(0).lastIndexOf("/") + 1);
 			ui->filePostion->setText(fileDirPath);
 		}
-		ui->filePostion->setText(m_fileList.at(0));
+		else
+		{
+			ui->filePostion->setText(m_fileList.at(0));
+		}
 
 		if (!m_fileList.at(0).isEmpty())
 		{
@@ -60,6 +68,9 @@ void SewerClient::on_btnDetect_clicked()
 		return;
 	}
 	m_isDetect = true;
+	// 清空文本框 [2/11/2023]
+	ui->filePostion->clear();
+	ui->btnDetect->setEnabled(false);
 }
 
 bool SewerClient::imgDetect()
@@ -76,9 +87,6 @@ bool SewerClient::imgDetect()
 		writeDocx();
 		// 清空文件列表 [2/10/2023]
 		m_lstFileInfo.clear();
-		// 清空文本框 [2/11/2023]
-		ui->filePostion->clear();
-		ui->btnDetect->setEnabled(false);
 	}
 	catch (const std::exception& e)
 	{
@@ -90,6 +98,7 @@ bool SewerClient::imgDetect()
 
 void SewerClient::setImgInfo()
 {
+	m_isDetect = false;
 	for (QString& imgPath : m_fileList)
 	{
 		QFileInfo imgInfo(imgPath);
