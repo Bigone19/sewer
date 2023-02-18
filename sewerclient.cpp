@@ -128,13 +128,13 @@ void SewerClient::writeDocx()
 	{
 		for (QFileInfo& info : m_lstFileInfo)
 		{
-			detectInfoUtil(info);
+			detectInfoUtil(info, true);
 		}
 	}
 	m_docx->save(m_docxName);
 }
 
-void SewerClient::detectInfoUtil(QFileInfo& info)
+void SewerClient::detectInfoUtil(QFileInfo& info, bool isMuti /*=false*/)
 {
 	string imgPath = info.absoluteFilePath().toStdString(); // 待检测图片绝对路径 [2/4/2023]
 	string imgName = info.baseName().toStdString();		// 图片文件名称 [2/4/2023]
@@ -159,7 +159,7 @@ void SewerClient::detectInfoUtil(QFileInfo& info)
 		// 写入图片 [2/6/2023]
 		imwrite(dstImgPath, dstImg);
 		// 图片展示 [2/17/2023]
-		displayImg(dstImgPath);
+		displayImg(dstImgPath, isMuti);
 		// docx写入项目文件夹 [2/12/2023]
 		Table* pTable = m_docx->addTemplate(dstImgPath, defectName);
 	}
@@ -224,6 +224,7 @@ void SewerClient::displayImg(string& imgPath, bool isMuti/*=false*/)
 
 	if (isMuti)
 	{
+
 	}
 	else
 	{

@@ -67,7 +67,7 @@ private:
     * @param: 
     * @date: 2023/02/18
     */
-    void detectInfoUtil(QFileInfo& info);
+    void detectInfoUtil(QFileInfo& info, bool isMuti =false);
     /**
     * @brief: 设置docx结果路径
     * @param: 
