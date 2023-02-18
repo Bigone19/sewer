@@ -18,6 +18,7 @@ SewerClient::SewerClient(QWidget *parent)
 	ui->btnDetect->setEnabled(false);
 	// 未创建项目名称前不能上传图片 [2/12/2023]
 	ui->btnSelectFile->setEnabled(false);
+	ui->imgTabWidget->setTabVisible(0, false);
 }
 
 SewerClient::~SewerClient()
@@ -119,43 +120,54 @@ void SewerClient::writeDocx()
 	m_docxName = (m_projectDirPath + "/" + m_wProject->m_projectName + ".docx");
 	// 打开docx模板 [2/14/2023]
 	m_docx = new CDox("default.docx");
-
-	for (QFileInfo& info : m_lstFileInfo)
+	if (m_lstFileInfo.size() == 1)
 	{
-		string imgPath = info.absoluteFilePath().toStdString(); // 待检测图片绝对路径 [2/4/2023]
-		string imgName = info.baseName().toStdString();		// 图片文件名称 [2/4/2023]
-		string dstImgPath;		// 处理完成移动后图片路径 [2/4/2023]
-		try
+		detectInfoUtil(m_lstFileInfo[0]);
+	}
+	else
+	{
+		for (QFileInfo& info : m_lstFileInfo)
 		{
-			Mat srcImg = imread(imgPath);
-			Mat dstImg = srcImg.clone();
-			qDebug() << QString::fromLocal8Bit("detecting image: %1").arg(QString::fromStdString(imgName));
-			m_detectResVec = m_detector->getDetectRes(srcImg);
-			// 检测到置信值最高的缺陷类别（后续需要更新到可根据用户需求更改） [2/9/2023]
-			auto& resCls = m_detectResVec.at(0);
-			// 检测到缺陷类别名称 [2/9/2023]
-			string defectName = m_clsNames.at(resCls.first);
-			// 图片文件后缀名 [2/9/2023]
-			string suffixName = info.suffix().toStdString();
-			// 文件名添加检测类别 [2/5/2023]
-			imgName += ("_" + defectName + "." + suffixName);
-			m_detector->imgName2ResName(imgName, dstImgPath);
-			// resize [2/16/2023]
-			autoScaleImg(dstImg);
-			// 写入图片 [2/6/2023]
-			imwrite(dstImgPath, dstImg);
-			// 图片展示 [2/17/2023]
-			displayImg(dstImgPath);
-			// docx写入项目文件夹 [2/12/2023]
-			Table* pTable = m_docx->addTemplate(dstImgPath, defectName);
-		}
-		catch (const cv::Exception& e)
-		{
-			qDebug() << QString::fromLocal8Bit("图片读取出现错误: ") << e.what() << Qt::endl;
-			continue;
+			detectInfoUtil(info);
 		}
 	}
 	m_docx->save(m_docxName);
+}
+
+void SewerClient::detectInfoUtil(QFileInfo& info)
+{
+	string imgPath = info.absoluteFilePath().toStdString(); // 待检测图片绝对路径 [2/4/2023]
+	string imgName = info.baseName().toStdString();		// 图片文件名称 [2/4/2023]
+	string dstImgPath;		// 处理完成移动后图片路径 [2/4/2023]
+	try
+	{
+		Mat srcImg = imread(imgPath);
+		Mat dstImg = srcImg.clone();
+		qDebug() << QString::fromLocal8Bit("detecting image: %1").arg(QString::fromStdString(imgName));
+		m_detectResVec = m_detector->getDetectRes(srcImg);
+		// 检测到置信值最高的缺陷类别（后续需要更新到可根据用户需求更改） [2/9/2023]
+		auto& resCls = m_detectResVec.at(0);
+		// 检测到缺陷类别名称 [2/9/2023]
+		string defectName = m_clsNames.at(resCls.first);
+		// 图片文件后缀名 [2/9/2023]
+		string suffixName = info.suffix().toStdString();
+		// 文件名添加检测类别 [2/5/2023]
+		imgName += ("_" + defectName + "." + suffixName);
+		m_detector->imgName2ResName(imgName, dstImgPath);
+		// resize [2/16/2023]
+		autoScaleImg(dstImg);
+		// 写入图片 [2/6/2023]
+		imwrite(dstImgPath, dstImg);
+		// 图片展示 [2/17/2023]
+		displayImg(dstImgPath);
+		// docx写入项目文件夹 [2/12/2023]
+		Table* pTable = m_docx->addTemplate(dstImgPath, defectName);
+	}
+	catch (const cv::Exception& e)
+	{
+		qDebug() << QString::fromLocal8Bit("图片读取出现错误: ") << e.what() << Qt::endl;
+		return;
+	}
 }
 
 void SewerClient::setDocxPath()
@@ -205,9 +217,20 @@ void SewerClient::autoScaleImg(Mat& srcImg)
 	cv::resize(srcImg, srcImg, resizeScale);
 }
 
-void SewerClient::displayImg(string& imgPath)
+void SewerClient::displayImg(string& imgPath, bool isMuti/*=false*/)
 {
-	ui->labelImgDisplay->setPixmap(QString::fromStdString(imgPath));
+	size_t pos = imgPath.find_last_of('/');
+	QString strImgName = QString::fromStdString(imgPath.substr(pos + 1));
+
+	if (isMuti)
+	{
+	}
+	else
+	{
+		ui->imgTabWidget->setTabVisible(0, true);
+		ui->imgTabWidget->setTabText(0, strImgName);
+		ui->labelImgDisplay->setPixmap(QString::fromStdString(imgPath));
+	}
 }
 
 void SewerClient::on_btnNewProject_clicked()

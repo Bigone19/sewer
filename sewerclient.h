@@ -63,6 +63,12 @@ private:
     */
     void writeDocx();
     /**
+    * @brief: 检测信息工具
+    * @param: 
+    * @date: 2023/02/18
+    */
+    void detectInfoUtil(QFileInfo& info);
+    /**
     * @brief: 设置docx结果路径
     * @param: 
     * @date: 2023/02/12
@@ -82,10 +88,10 @@ private:
     void autoScaleImg(Mat& srcImg);
     /**
     * @brief: 展示检测后的图片
-    * @param: 
+    * @param isMuti: 是否多个图片
     * @date: 2023/02/17
     */
-    void displayImg(string& imgPath);
+    void displayImg(string& imgPath, bool isMuti=false);
 private:
     Ui::SewerClient *ui;
 
