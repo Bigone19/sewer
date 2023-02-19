@@ -122,14 +122,13 @@ void SewerClient::writeDocx()
 	m_docxName = (m_projectDirPath + "/" + m_wProject->m_projectName + ".docx");
 	// 打开docx模板 [2/14/2023]
 	m_docx = new CDox("default.docx");
-	if (m_lstFileInfo.size() == 1)
+	detectInfoUtil(m_lstFileInfo[0]);
+
+	if (m_lstFileInfo.size() > 1)
 	{
-		detectInfoUtil(m_lstFileInfo[0]);
-	}
-	else
-	{
-		for (QFileInfo& info : m_lstFileInfo)
+		for (int i = 1; i < m_lstFileInfo.size(); i++)
 		{
+			QFileInfo info = m_lstFileInfo[i];
 			detectInfoUtil(info, true);
 		}
 	}
@@ -224,10 +223,7 @@ void SewerClient::displayImg(string& imgPath, bool isMuti/*=false*/)
 	size_t pos = imgPath.find_last_of('/');
 	QString strImgName = QString::fromStdString(imgPath.substr(pos + 1));
 
-	if (isMuti)
-	{
-	}
-	else
+	if (!isMuti)
 	{
 		ui->imgTabWidget->setTabVisible(0, true);
 		ui->imgTabWidget->setTabText(0, strImgName);
@@ -237,6 +233,10 @@ void SewerClient::displayImg(string& imgPath, bool isMuti/*=false*/)
 		QPalette palette;
 		palette.setBrush(this->backgroundRole(), QBrush(img.scaled(ui->imgTab->size(), Qt::IgnoreAspectRatio, Qt::FastTransformation)));
 		ui->imgTab->setPalette(palette);
+	}
+	else
+	{
+
 	}
 }
 
