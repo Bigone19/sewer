@@ -4,6 +4,7 @@
 #include "projectcfg.h"
 
 #include <QDateTime>
+#include <QBrush>
 
 SewerClient::SewerClient(QWidget *parent)
     : QMainWindow(parent)
@@ -19,6 +20,7 @@ SewerClient::SewerClient(QWidget *parent)
 	// 未创建项目名称前不能上传图片 [2/12/2023]
 	ui->btnSelectFile->setEnabled(false);
 	ui->imgTabWidget->setTabVisible(0, false);
+	ui->imgTab->setAutoFillBackground(true);
 }
 
 SewerClient::~SewerClient()
@@ -224,13 +226,17 @@ void SewerClient::displayImg(string& imgPath, bool isMuti/*=false*/)
 
 	if (isMuti)
 	{
-
 	}
 	else
 	{
 		ui->imgTabWidget->setTabVisible(0, true);
 		ui->imgTabWidget->setTabText(0, strImgName);
-		ui->labelImgDisplay->setPixmap(QString::fromStdString(imgPath));
+		QImage img;
+		img.load(QString::fromStdString(imgPath));
+		ui->imgTab->setFixedSize(img.size());
+		QPalette palette;
+		palette.setBrush(this->backgroundRole(), QBrush(img.scaled(ui->imgTab->size(), Qt::IgnoreAspectRatio, Qt::FastTransformation)));
+		ui->imgTab->setPalette(palette);
 	}
 }
 
