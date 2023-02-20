@@ -222,21 +222,25 @@ void SewerClient::displayImg(string& imgPath, bool isMuti/*=false*/)
 {
 	size_t pos = imgPath.find_last_of('/');
 	QString strImgName = QString::fromStdString(imgPath.substr(pos + 1));
+	QImage img;
+	img.load(QString::fromStdString(imgPath));
+	QPalette palette;
 
 	if (!isMuti)
 	{
 		ui->imgTabWidget->setTabVisible(0, true);
 		ui->imgTabWidget->setTabText(0, strImgName);
-		QImage img;
-		img.load(QString::fromStdString(imgPath));
 		ui->imgTab->setFixedSize(img.size());
-		QPalette palette;
-		palette.setBrush(this->backgroundRole(), QBrush(img.scaled(ui->imgTab->size(), Qt::IgnoreAspectRatio, Qt::FastTransformation)));
+		palette.setBrush(ui->imgTab->backgroundRole(), QBrush(img.scaled(ui->imgTab->size(), Qt::IgnoreAspectRatio, Qt::FastTransformation)));
 		ui->imgTab->setPalette(palette);
 	}
 	else
 	{
-
+		QWidget* tmpWidget = new QWidget(ui->imgTabWidget);
+		tmpWidget->setFixedSize(img.size());
+		palette.setBrush(tmpWidget->backgroundRole(), QBrush(img.scaled(tmpWidget->size(), Qt::IgnoreAspectRatio, Qt::FastTransformation)));
+		tmpWidget->setPalette(palette);
+		ui->imgTabWidget->addTab(tmpWidget, strImgName);
 	}
 }
 
