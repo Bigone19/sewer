@@ -3,12 +3,15 @@
 
 #include <QMainWindow>
 #include <QFileDialog>
+#include <unordered_map>
+
 // update [2/2/2023 ]
 #include "onnxDetector.h"
 // docx [2/6/2023]
 #include "docxUtils.h"
 
 using namespace DocxUtils;
+using std::unordered_map;
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class SewerClient; }
@@ -42,8 +45,26 @@ private slots:
     * @date: 2023/02/12
     */
     void on_btnNewProject_clicked();
+    /**
+    * @brief: 导出docx文档
+    * @param: 
+    * @date: 2023/02/26
+    */
+    void on_btnDocxOutput_clicked();
+    /**
+    * @brief: 名称combox
+    * @param: 
+    * @date: 2023/02/28
+    */
+    void on_comBoxName_activated(int index);
 
 private:
+    /**
+    * @brief: 设置检测完成后combox选项
+    * @param: 
+    * @date: 2023/02/28
+    */
+    void setDetectInfo(pair<size_t, float>& defectInfo);
     /**
     * @brief: 检测函数入口
     * @param: 
@@ -110,6 +131,8 @@ private:
     projectCfg* m_wProject;     // 弹出项目窗口 [2/12/2023]
 
     bool m_isDetect;            // 是否点击检测按钮 [2/16/2023]
+
+    unordered_map<string, string> m_mapImgDefect;   //  [2/26/2023]
 
     friend class projectCfg;
 };

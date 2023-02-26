@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>339</height>
+    <width>368</width>
+    <height>376</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,13 +17,13 @@
    <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
-      <x>13</x>
-      <y>15</y>
-      <width>375</width>
-      <height>300</height>
+      <x>17</x>
+      <y>19</y>
+      <width>331</width>
+      <height>331</height>
      </rect>
     </property>
-    <layout class="QVBoxLayout" name="verticalLayout">
+    <layout class="QVBoxLayout" name="verticalLayout_2">
      <item>
       <widget class="QPushButton" name="btnNewProject">
        <property name="text">
@@ -53,40 +53,214 @@
       </layout>
      </item>
      <item>
-      <widget class="QTabWidget" name="imgTabWidget">
-       <property name="minimumSize">
-        <size>
-         <width>0</width>
-         <height>0</height>
-        </size>
+      <widget class="QPushButton" name="btnDocxOutput">
+       <property name="text">
+        <string>导出Word文档</string>
        </property>
-       <property name="maximumSize">
-        <size>
-         <width>224</width>
-         <height>224</height>
-        </size>
-       </property>
-       <property name="baseSize">
-        <size>
-         <width>0</width>
-         <height>0</height>
-        </size>
-       </property>
-       <property name="currentIndex">
-        <number>0</number>
-       </property>
-       <widget class="QWidget" name="imgTab">
-        <property name="minimumSize">
-         <size>
-          <width>224</width>
-          <height>224</height>
-         </size>
-        </property>
-        <attribute name="title">
-         <string>Tab 1</string>
-        </attribute>
-       </widget>
       </widget>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_5">
+       <item>
+        <widget class="QTabWidget" name="imgTabWidget">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>224</width>
+           <height>224</height>
+          </size>
+         </property>
+         <property name="baseSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="currentIndex">
+          <number>0</number>
+         </property>
+         <widget class="QWidget" name="imgTab">
+          <property name="minimumSize">
+           <size>
+            <width>224</width>
+            <height>224</height>
+           </size>
+          </property>
+          <attribute name="title">
+           <string>Tab 1</string>
+          </attribute>
+         </widget>
+        </widget>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout">
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_2">
+           <item>
+            <widget class="QLabel" name="labelName">
+             <property name="text">
+              <string>名称</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="comBoxName">
+             <item>
+              <property name="text">
+               <string/>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>RB</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>OB</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>PF</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>DE</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>FS</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>IS</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>RO</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>IN</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>AF</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>BE</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>FO</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>GR</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>PH</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>PB</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>OS</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>OP</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>OK</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_3">
+           <item>
+            <widget class="QLabel" name="labelLevel">
+             <property name="text">
+              <string>等级</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="comBoxLevel">
+             <item>
+              <property name="text">
+               <string/>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>1级</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>2级</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>3级</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>4级</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_4">
+           <item>
+            <widget class="QLabel" name="labelSimilarity">
+             <property name="text">
+              <string>相似度</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="lineEditSimilarity"/>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </item>
+      </layout>
      </item>
     </layout>
    </widget>
