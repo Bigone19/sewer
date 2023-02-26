@@ -6,21 +6,21 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>339</height>
+    <width>348</width>
+    <height>363</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>SewerClient</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QWidget" name="layoutWidget">
+   <widget class="QWidget" name="">
     <property name="geometry">
      <rect>
-      <x>13</x>
-      <y>15</y>
-      <width>375</width>
-      <height>300</height>
+      <x>15</x>
+      <y>17</y>
+      <width>300</width>
+      <height>321</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout">
@@ -51,6 +51,13 @@
         </widget>
        </item>
       </layout>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButton">
+       <property name="text">
+        <string>导出Word文档</string>
+       </property>
+      </widget>
      </item>
      <item>
       <widget class="QTabWidget" name="imgTabWidget">

@@ -5,6 +5,7 @@
 
 #include <QDateTime>
 #include <QBrush>
+#include <QPixmap>
 
 SewerClient::SewerClient(QWidget *parent)
     : QMainWindow(parent)
@@ -25,6 +26,7 @@ SewerClient::SewerClient(QWidget *parent)
 
 SewerClient::~SewerClient()
 {
+	m_mapImgDefect.clear();
 	m_detectResVec.clear();
 	m_clsNames.clear();
     m_fileList.clear();
@@ -86,10 +88,22 @@ bool SewerClient::imgDetect()
 			m_detector->getClsNames(m_clsNames);
 		}
 		qDebug() << SUCCEED_CODE_1;
+		// 开始检测 [2/26/2023]
+		detectInfoUtil(m_lstFileInfo[0]);
+		if (m_lstFileInfo.size() > 1)
+		{
+			for (int i = 1; i < m_lstFileInfo.size(); i++)
+			{
+				QFileInfo info = m_lstFileInfo[i];
+				detectInfoUtil(info, true);
+			}
+		}
+#if 0
 		// 遍历检测图片列表并写入docx [2/10/2023]
 		writeDocx();
 		// 清空文件列表 [2/10/2023]
 		m_lstFileInfo.clear();
+#endif
 	}
 	catch (const std::exception& e)
 	{
@@ -122,6 +136,13 @@ void SewerClient::writeDocx()
 	m_docxName = (m_projectDirPath + "/" + m_wProject->m_projectName + ".docx");
 	// 打开docx模板 [2/14/2023]
 	m_docx = new CDox("default.docx");
+	// 绘制表格 [2/26/2023]
+	for (auto& [imgPath, defectName] : m_mapImgDefect)
+	{
+		// docx写入项目文件夹 [2/26/2023]
+		Table* pTable = m_docx->addTemplate(imgPath, defectName);
+	}
+#if 0
 	detectInfoUtil(m_lstFileInfo[0]);
 
 	if (m_lstFileInfo.size() > 1)
@@ -132,6 +153,7 @@ void SewerClient::writeDocx()
 			detectInfoUtil(info, true);
 		}
 	}
+#endif
 	m_docx->save(m_docxName);
 }
 
@@ -161,8 +183,12 @@ void SewerClient::detectInfoUtil(QFileInfo& info, bool isMuti /*=false*/)
 		imwrite(dstImgPath, dstImg);
 		// 图片展示 [2/17/2023]
 		displayImg(dstImgPath, isMuti);
+		// 建立<图片路径-缺陷名称>键值对 [2/26/2023]
+		m_mapImgDefect.insert(std::make_pair(dstImgPath, defectName));
+#if 0
 		// docx写入项目文件夹 [2/12/2023]
 		Table* pTable = m_docx->addTemplate(dstImgPath, defectName);
+#endif
 	}
 	catch (const cv::Exception& e)
 	{
@@ -218,13 +244,14 @@ void SewerClient::autoScaleImg(Mat& srcImg)
 	cv::resize(srcImg, srcImg, resizeScale);
 }
 
+static int s_idx = 0;
 void SewerClient::displayImg(string& imgPath, bool isMuti/*=false*/)
 {
 	size_t pos = imgPath.find_last_of('/');
 	QString strImgName = QString::fromStdString(imgPath.substr(pos + 1));
 	QImage img;
 	img.load(QString::fromStdString(imgPath));
-	QPalette palette;
+	QPalette palette = ui->imgTab->palette();
 
 	if (!isMuti)
 	{
@@ -233,12 +260,14 @@ void SewerClient::displayImg(string& imgPath, bool isMuti/*=false*/)
 		ui->imgTab->setFixedSize(img.size());
 		palette.setBrush(ui->imgTab->backgroundRole(), QBrush(img.scaled(ui->imgTab->size(), Qt::IgnoreAspectRatio, Qt::FastTransformation)));
 		ui->imgTab->setPalette(palette);
+
 	}
 	else
 	{
 		QWidget* tmpWidget = new QWidget(ui->imgTabWidget);
 		tmpWidget->setFixedSize(img.size());
-		palette.setBrush(tmpWidget->backgroundRole(), QBrush(img.scaled(tmpWidget->size(), Qt::IgnoreAspectRatio, Qt::FastTransformation)));
+		//palette.setBrush(tmpWidget->backgroundRole(), QBrush(img.scaled(tmpWidget->size(), Qt::IgnoreAspectRatio, Qt::FastTransformation)));
+		palette.setBrush(QPalette::Base, QBrush(QPixmap(QString::fromStdString(imgPath))));
 		tmpWidget->setPalette(palette);
 		ui->imgTabWidget->addTab(tmpWidget, strImgName);
 	}
@@ -253,3 +282,9 @@ void SewerClient::on_btnNewProject_clicked()
 	m_wProject->show();
 }
 
+void SewerClient::on_pushButton_clicked()
+{
+	// 写入docx [2/26/2023]
+	writeDocx();
+	m_lstFileInfo.clear();
+}
