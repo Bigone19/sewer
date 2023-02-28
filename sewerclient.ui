@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>368</width>
-    <height>376</height>
+    <width>391</width>
+    <height>392</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,8 +19,8 @@
      <rect>
       <x>17</x>
       <y>19</y>
-      <width>331</width>
-      <height>331</height>
+      <width>347</width>
+      <height>338</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -90,6 +90,9 @@
             <width>224</width>
             <height>224</height>
            </size>
+          </property>
+          <property name="focusPolicy">
+           <enum>Qt::TabFocus</enum>
           </property>
           <attribute name="title">
            <string>Tab 1</string>

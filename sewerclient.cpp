@@ -27,7 +27,7 @@ SewerClient::SewerClient(QWidget *parent)
 
 SewerClient::~SewerClient()
 {
-	m_mapImgDefect.clear();
+	m_vecImgDefect.clear();
 	m_detectResVec.clear();
 	m_clsNames.clear();
     m_fileList.clear();
@@ -142,7 +142,7 @@ void SewerClient::writeDocx()
 	// 打开docx模板 [2/14/2023]
 	m_docx = new CDox("default.docx");
 	// 绘制表格 [2/26/2023]
-	for (auto& [imgPath, defectName] : m_mapImgDefect)
+	for (auto& [imgPath, defectName] : m_vecImgDefect)
 	{
 		// docx写入项目文件夹 [2/26/2023]
 		Table* pTable = m_docx->addTemplate(imgPath, defectName);
@@ -178,7 +178,7 @@ void SewerClient::detectInfoUtil(QFileInfo& info, bool isMuti /*=false*/)
 		// 图片展示 [2/17/2023]
 		displayImg(dstImgPath, isMuti);
 		// 建立<图片路径-缺陷名称>键值对 [2/26/2023]
-		m_mapImgDefect.insert(std::make_pair(dstImgPath, defectName));
+		m_vecImgDefect.emplace_back(std::make_pair(dstImgPath, defectName));
 	}
 	catch (const cv::Exception& e)
 	{
@@ -234,7 +234,6 @@ void SewerClient::autoScaleImg(Mat& srcImg)
 	cv::resize(srcImg, srcImg, resizeScale);
 }
 
-static int s_idx = 0;
 void SewerClient::displayImg(string& imgPath, bool isMuti/*=false*/)
 {
 	size_t pos = imgPath.find_last_of('/');
@@ -245,20 +244,24 @@ void SewerClient::displayImg(string& imgPath, bool isMuti/*=false*/)
 
 	if (!isMuti)
 	{
+		// 更换显示图片方式 [3/2/2023]
 		ui->imgTabWidget->setTabVisible(0, true);
 		ui->imgTabWidget->setTabText(0, strImgName);
-		ui->imgTab->setFixedSize(img.size());
-		palette.setBrush(ui->imgTab->backgroundRole(), QBrush(img.scaled(ui->imgTab->size(), Qt::IgnoreAspectRatio, Qt::FastTransformation)));
-		ui->imgTab->setPalette(palette);
-
+		QLabel* tmpLabel = new QLabel(ui->imgTab);
+		QPixmap pic(QString::fromStdString(imgPath));
+		tmpLabel->setPixmap(pic);
+		QVBoxLayout* tmpVBoxLayout = new QVBoxLayout(ui->imgTab);
+		tmpVBoxLayout->addWidget(tmpLabel);
 	}
 	else
 	{
 		QWidget* tmpWidget = new QWidget(ui->imgTabWidget);
 		tmpWidget->setFixedSize(img.size());
-		//palette.setBrush(tmpWidget->backgroundRole(), QBrush(img.scaled(tmpWidget->size(), Qt::IgnoreAspectRatio, Qt::FastTransformation)));
-		palette.setBrush(QPalette::Base, QBrush(QPixmap(QString::fromStdString(imgPath))));
-		tmpWidget->setPalette(palette);
+		QLabel* tmpLabel = new QLabel(tmpWidget);
+		QPixmap pic(QString::fromStdString(imgPath));
+		tmpLabel->setPixmap(pic);
+		QVBoxLayout* tmpVBoxLayout = new QVBoxLayout(tmpWidget);
+		tmpVBoxLayout->addWidget(tmpLabel);
 		ui->imgTabWidget->addTab(tmpWidget, strImgName);
 	}
 }
@@ -282,6 +285,8 @@ void SewerClient::on_btnDocxOutput_clicked()
 
 void SewerClient::on_comBoxName_activated(int index)
 {
-	m_detectResVec[0].first = (index - 1);
+	int com_idx = (index - 1);
+	m_detectResVec[0].first = com_idx;
+	m_vecImgDefect[0].second = m_clsNames.at(com_idx);
 }
 

@@ -132,7 +132,7 @@ private:
 
     bool m_isDetect;            // 是否点击检测按钮 [2/16/2023]
 
-    unordered_map<string, string> m_mapImgDefect;   //  [2/26/2023]
+    vector<pair<string, string> > m_vecImgDefect;   // <图片路径-缺陷名称> [3/1/2023]
 
     friend class projectCfg;
 };
