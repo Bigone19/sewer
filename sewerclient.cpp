@@ -22,7 +22,6 @@ SewerClient::SewerClient(QWidget *parent)
 	ui->btnDocxOutput->setEnabled(false);
 	ui->imgTabWidget->setTabVisible(0, false);
 	ui->imgTab->setAutoFillBackground(true);
-	ui->lineEditSimilarity->setEnabled(false);
 }
 
 SewerClient::~SewerClient()
@@ -69,6 +68,11 @@ void SewerClient::on_btnSelectFile_clicked()
 
 void SewerClient::on_btnDetect_clicked()
 {
+	if (!ui->imgTab->children().isEmpty())
+	{
+		QObject* tmpLabel = ui->imgTab->children().at(0);
+		delete tmpLabel;
+	}
 	if (!imgDetect())
 	{
 		qDebug() << ERROR_CODE_8 << Qt::endl;
@@ -79,6 +83,7 @@ void SewerClient::on_btnDetect_clicked()
 	ui->filePostion->clear();
 	ui->btnDetect->setEnabled(false);
 	ui->btnDocxOutput->setEnabled(true);
+	m_lstFileInfo.clear();
 }
 
 void SewerClient::setDetectInfo(pair<size_t, float>& defectInfo)
@@ -252,6 +257,7 @@ void SewerClient::displayImg(string& imgPath, bool isMuti/*=false*/)
 		tmpLabel->setPixmap(pic);
 		QVBoxLayout* tmpVBoxLayout = new QVBoxLayout(ui->imgTab);
 		tmpVBoxLayout->addWidget(tmpLabel);
+		tmpVBoxLayout->deleteLater();
 	}
 	else
 	{
@@ -289,4 +295,10 @@ void SewerClient::on_comBoxName_activated(int index)
 	m_detectResVec[0].first = com_idx;
 	m_vecImgDefect[0].second = m_clsNames.at(com_idx);
 }
+
+void SewerClient::on_imgTabWidget_currentChanged(int index)
+{
+
+}
+
 

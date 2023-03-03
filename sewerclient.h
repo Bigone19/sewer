@@ -57,6 +57,12 @@ private slots:
     * @date: 2023/02/28
     */
     void on_comBoxName_activated(int index);
+    /**
+    * @brief: 切换tab事件
+    * @param: 
+    * @date: 2023/03/03
+    */
+    void on_imgTabWidget_currentChanged(int index);
 
 private:
     /**
