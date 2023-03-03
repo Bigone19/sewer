@@ -15,6 +15,15 @@ SewerClient::SewerClient(QWidget *parent)
 	m_clsNames.clear();
 	setDocxPath();
 
+	m_mapDefectNameIdx = 
+	{
+		{"RB", 1}, {"OB", 2}, {"PF", 3}, {"DE", 4},
+		{"FS", 5}, {"IS", 6}, {"RO", 7}, {"IN", 8},
+		{"AF", 9}, {"BE", 10}, {"FO", 11}, {"GR", 12},
+		{"PH", 13}, {"PB", 14}, {"OS", 15}, {"OP", 16},
+		{"OK", 17}
+	};
+
     ui->setupUi(this);
 	ui->filePostion->setEnabled(false);
 	ui->btnDetect->setEnabled(false);
@@ -298,7 +307,9 @@ void SewerClient::on_comBoxName_activated(int index)
 
 void SewerClient::on_imgTabWidget_currentChanged(int index)
 {
-
+	string defectName = m_vecImgDefect.at(index).second;
+	int com_idx = m_mapDefectNameIdx.at(defectName);
+	ui->comBoxName->setCurrentIndex(com_idx);
 }
 
 

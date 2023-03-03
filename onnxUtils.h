@@ -67,4 +67,5 @@ namespace onnxUtils
 	*/
 	vector<string> loadClsNames(const string& path);
 }
+
 #endif
