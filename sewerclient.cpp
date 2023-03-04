@@ -12,6 +12,7 @@ SewerClient::SewerClient(QWidget *parent)
     , ui(new Ui::SewerClient)
 	, m_isDetect(false)
 {
+	m_currTabIdx = 0;
 	m_clsNames.clear();
 	setDocxPath();
 
@@ -301,15 +302,16 @@ void SewerClient::on_btnDocxOutput_clicked()
 void SewerClient::on_comBoxName_activated(int index)
 {
 	int com_idx = (index - 1);
-	m_detectResVec[0].first = com_idx;
-	m_vecImgDefect[0].second = m_clsNames.at(com_idx);
+	// 更新标签后修改combox功能 [3/9/2023]
+	m_detectResVec[m_currTabIdx].first = com_idx;
+	m_vecImgDefect[m_currTabIdx].second = m_clsNames.at(com_idx);
 }
 
 void SewerClient::on_imgTabWidget_currentChanged(int index)
 {
+	m_currTabIdx = index;
 	string defectName = m_vecImgDefect.at(index).second;
 	int com_idx = m_mapDefectNameIdx.at(defectName);
+	// 切换标签后更新combox [3/9/2023]
 	ui->comBoxName->setCurrentIndex(com_idx);
 }
-
-

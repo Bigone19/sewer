@@ -141,6 +141,7 @@ private:
 
     vector<pair<string, string> > m_vecImgDefect;   // <图片路径-缺陷名称> [3/1/2023]
     unordered_map<string, int> m_mapDefectNameIdx;  // combox defect name map [3/4/2023]
+    int m_currTabIdx;  // 当前tab id [3/9/2023]
 
     friend class projectCfg;
 };
