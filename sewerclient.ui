@@ -6,26 +6,37 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>538</width>
-    <height>381</height>
+    <width>518</width>
+    <height>390</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>SewerClient</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>10</y>
-      <width>511</width>
+      <x>21</x>
+      <y>12</y>
+      <width>471</width>
       <height>340</height>
      </rect>
     </property>
     <layout class="QHBoxLayout" name="horizontalLayout_6">
      <item>
-      <widget class="QListView" name="listViewProjects"/>
+      <layout class="QVBoxLayout" name="verticalLayout_3">
+       <item>
+        <widget class="QLabel" name="labelProject">
+         <property name="text">
+          <string>工程名称：</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QListWidget" name="listWidgetProject"/>
+       </item>
+      </layout>
      </item>
      <item>
       <layout class="QVBoxLayout" name="verticalLayout_2">

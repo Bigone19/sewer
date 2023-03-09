@@ -1,7 +1,7 @@
 ﻿#include "sewerclient.h"
 #include "ui_sewerclient.h"
 #include "table.h"
-#include "projectcfg.h"
+#include "projectdlg.h"
 
 #include <QDateTime>
 #include <QBrush>
@@ -285,7 +285,7 @@ void SewerClient::displayImg(string& imgPath, bool isMuti/*=false*/)
 void SewerClient::on_btnNewProject_clicked()
 {
 	// 添加项目弹窗 [2/12/2023]
-	m_wProject = new projectCfg(this);
+	m_wProject = new projectDlg(this);
 	Qt::WindowFlags flags = Qt::Dialog;
 	m_wProject->setWindowFlags(flags);
 	m_wProject->show();
@@ -315,3 +315,10 @@ void SewerClient::on_imgTabWidget_currentChanged(int index)
 	// 切换标签后更新combox [3/9/2023]
 	ui->comBoxName->setCurrentIndex(com_idx);
 }
+
+void SewerClient::on_listWidgetProject_doubleClicked(const QModelIndex &index)
+{
+	auto tmp = index.data();
+	qDebug() << tmp.toString();
+}
+

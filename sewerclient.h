@@ -18,7 +18,7 @@ QT_BEGIN_NAMESPACE
 namespace Ui { class SewerClient; }
 QT_END_NAMESPACE
 
-class projectCfg;
+class projectDlg;
 class SewerClient : public QMainWindow
 {
     Q_OBJECT
@@ -64,6 +64,12 @@ private slots:
     * @date: 2023/03/03
     */
     void on_imgTabWidget_currentChanged(int index);
+    /**
+    * @brief: 打开检测工程结果文件夹
+    * @param: 
+    * @date: 2023/03/09
+    */
+    void on_listWidgetProject_doubleClicked(const QModelIndex &index);
 
 private:
     /**
@@ -135,7 +141,7 @@ private:
     QString m_docxName;         // docx文件名 [2/12/2023]
     QString m_docxDirPath;      // docx结果文件夹路径 [2/12/2023]
     QString m_projectDirPath;   // 项目文件夹路径 [2/14/2023]
-    projectCfg* m_wProject;     // 弹出项目窗口 [2/12/2023]
+    projectDlg* m_wProject;     // 弹出项目窗口 [2/12/2023]
 
     bool m_isDetect;            // 是否点击检测按钮 [2/16/2023]
 
@@ -143,6 +149,6 @@ private:
     unordered_map<string, int> m_mapDefectNameIdx;  // combox defect name map [3/4/2023]
     int m_currTabIdx;  // 当前tab id [3/9/2023]
 
-    friend class projectCfg;
+    friend class projectDlg;
 };
 #endif // SEWERCLIENT_H
