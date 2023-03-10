@@ -39,19 +39,27 @@ INCLUDEPATH+=./opencv/build/include \
              ./opencv/build/include/opencv \
              ./opencv/build/include/opencv2 \
              ./Microsoft.ML.OnnxRuntime.1.10.0/build/native/include \
-             ./docx_include
+             ./docx_include \
+             $$PWD/yaml-cpp \
+             $$PWD/yaml-cpp/contrib \
+             $$PWD/yaml-cpp/node
 DEPENDPATH+=./opencv/build/include \
             ./opencv/build/include/opencv \
             ./opencv/build/include/opencv2 \
             ./Microsoft.ML.OnnxRuntime.1.10.0/build/native/include \
-            ./docx_include
+            ./docx_include \
+            $$PWD/yaml-cpp \
+            $$PWD/yaml-cpp/contrib \
+            $$PWD/yaml-cpp/node
 LIBS += -L./opencv/build/x64/vc15/lib \
         -lopencv_world452d \
         -lopencv_world452\
         -L./Microsoft.ML.OnnxRuntime.1.10.0/runtimes/win-x64/native \
         -lonnxruntime \
-        -L./docx_runtimes \
-        -ldocxlib
+        -L./lib \
+        -ldocxlib \
+        $$PWD/yaml-cpp/lib/yaml-cpp.lib \
+        $$PWD/yaml-cpp/lib/yaml-cppd.lib
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
