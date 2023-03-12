@@ -2,6 +2,7 @@
 #include "ui_sewerclient.h"
 #include "table.h"
 #include "projectdlg.h"
+#include "projectcfg.h"
 
 #include <QDateTime>
 #include <QBrush>
@@ -150,6 +151,9 @@ void SewerClient::setImgInfo()
 
 void SewerClient::writeDocx()
 {
+	// 项目配置写入数据库 [3/13/2023]
+	m_projectDB = new CProjectDB();
+	m_projectDB->closeDatabase();
 	// 项目对应的docx文件名称 [2/12/2023]
 	QString currTime = QDateTime::currentDateTime().toString("yyyyMMdd_hh:mm");
 	setProjectDir();

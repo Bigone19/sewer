@@ -18,6 +18,7 @@ QT_BEGIN_NAMESPACE
 namespace Ui { class SewerClient; }
 QT_END_NAMESPACE
 
+class CProjectDB;
 class projectDlg;
 class SewerClient : public QMainWindow
 {
@@ -149,6 +150,9 @@ private:
     unordered_map<string, int> m_mapDefectNameIdx;  // combox defect name map [3/4/2023]
     int m_currTabIdx;  // 当前tab id [3/9/2023]
 
+    CProjectDB* m_projectDB;   // 项目配置数据库写入 [3/13/2023]
+
     friend class projectDlg;
+    friend class CProjectDB;
 };
 #endif // SEWERCLIENT_H
