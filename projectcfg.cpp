@@ -2,29 +2,15 @@
 
 CProjectDB::CProjectDB()
 {
-	if (QSqlDatabase::contains("qt_sql_default_connection"))
-	{
-		m_db = QSqlDatabase::database("qt_sql_default_connection");
-	}
-	else
-	{
-		m_db = QSqlDatabase::addDatabase("QSQLITE");
-	}
-	m_db.setDatabaseName("projectInfo.db");
 	if (m_db.open())
 	{
-		qDebug() << "sqlite open success! ";
 		// 创建项目数据表 [3/13/2023]
-		if (!isTableExists())
-		{
-			createProjectTable();
-		}
+		createProjectTable();
 	}
 }
 
 CProjectDB::~CProjectDB()
 {
-	m_db.close();
 }
 
 bool CProjectDB::createProjectTable()
@@ -39,32 +25,22 @@ bool CProjectDB::createProjectTable()
 	bool ret = query.exec(sql);
 	if (ret)
 	{
-		qDebug() << "create table success";
+		qDebug() << "initial projects table success";
 	}
 	else
 	{
-		qDebug() << "create table failed" << query.lastError();
+		qDebug() << query.lastError();
 	}
 	return ret;
-}
-
-bool CProjectDB::isTableExists()
-{
-	const QString sql = R"(
-		SELECT name From sqlite_master
-		WHERE type='table'
-		AND name='projects_table';
-	)";
-	QSqlQuery query;
-	return query.exec(sql);
 }
 
 void CProjectDB::insertData(const QString& name)
 {
 	QSqlQuery query;
-	query.exec(QString(
+	bool ret = query.exec(QString(
 		R"(INSERT INTO projects_table(project_name) VALUES('%1');)"
 	).arg(name));
+	qDebug() << "create table failed" << query.lastError();
 }
 
 void CProjectDB::deleteData(const QString& name)
@@ -83,10 +59,26 @@ void CProjectDB::updateName(const QString& name)
 	).arg(name));
 }
 
-ProjectInfo CProjectDB::searchData(const QString& name)
+void CProjectDB::getAllProjects(QStringList& lstProjects)
 {
-	ProjectInfo info;
-	return info;
+	// 获取全部项目列表 [3/14/2023]
+	QSqlQuery query;
+	query.exec(QString(
+		R"(SELECT * FROM projects_table;)"
+	));
+	while (query.next())
+	{
+		lstProjects.append(query.value(1).toString());
+	}
+}
+
+bool CProjectDB::openDatabase()
+{
+	if (!m_db.isOpen())
+	{
+		return m_db.open();
+	}
+	return true;
 }
 
 void CProjectDB::closeDatabase()
@@ -96,6 +88,20 @@ void CProjectDB::closeDatabase()
 
 CImageDB::CImageDB()
 {
+	if (QSqlDatabase::contains("qt_sql_default_connection"))
+	{
+		m_db = QSqlDatabase::database("qt_sql_default_connection");
+	}
+	else
+	{
+		m_db = QSqlDatabase::addDatabase("QSQLITE");
+	}
+	m_db.setDatabaseName("imageInfo.db");
+	if (m_db.open())
+	{
+		// 创建图片表 [3/14/2023]
+		createImageTable();
+	}
 }
 
 CImageDB::~CImageDB()
@@ -103,27 +109,64 @@ CImageDB::~CImageDB()
 	m_db.close();
 }
 
-void CImageDB::insertData(const QString& strPath)
+void CImageDB::insertData(const QString& strPath, const QString& defectName, int defectLevel)
 {
 	QSqlQuery query;
 	query.exec(QString(
-		R"(INSERT INTO images_table(image_path) VALUES('%1');)"
-	).arg(strPath));
+		R"(INSERT INTO images_table(image_path,defect_name,defect_level) VALUES('%1','%2',%3);)"
+	).arg(strPath).arg(defectName).arg(defectLevel));
 }
 
 void CImageDB::deleteData(const QString& strPath)
 {
-
+	QSqlQuery query;
+	query.exec(QString(
+		R"(DELETE FROM images_table WHERE image_path='%1';)"
+	).arg(strPath));
 }
 
-void CImageDB::updateName(const QString& strPath)
+void CImageDB::updateDefectName(const QString& strPath, const QString& defectName)
 {
-
+	QSqlQuery query;
+	query.exec(QString(
+		R"(UPDATE images_table SET defect_name='%2' WHERE image_path='%1';)"
+	).arg(strPath).arg(defectName));
 }
 
-ProjectInfo CImageDB::searchData(const QString& strPath)
+void CImageDB::updateDefectLevel(const QString& strPath, int defectLevel)
 {
+	QSqlQuery query;
+	query.exec(QString(
+		R"(UPDATE images_table SET defect_level=%2 WHERE image_path='%1';)"
+	).arg(strPath).arg(defectLevel));
+}
 
+ImageInfo CImageDB::searchData(const QString& strPath)
+{
+	ImageInfo info;
+	info.s_path = strPath;
+	QSqlQuery query;
+	query.exec(QString(
+		R"(SELECT defect_name,defect_level FROM images_table
+			WHERE image_path='%1';)"
+	));
+	info.s_defectName = query.value(0).toString();
+	info.s_defectLevel = query.value(1).toInt();
+	return info;
+}
+
+bool CImageDB::openDatabase()
+{
+	if (!m_db.isOpen())
+	{
+		return m_db.open();
+	}
+	return true;
+}
+
+void CImageDB::closeDatabase()
+{
+	m_db.close();
 }
 
 bool CImageDB::createImageTable()
@@ -149,20 +192,22 @@ bool CImageDB::createImageTable()
 	return ret;
 }
 
-bool CImageDB::isTableExists()
-{
-	const QString sql = R"(
-		SELECT name From sqlite_master
-		WHERE type='table'
-		AND name='images_table';
-	)";
-	QSqlQuery query;
-	return query.exec(sql);
-}
-
 CMapDB::CMapDB()
 {
-
+	if (QSqlDatabase::contains("qt_sql_default_connection"))
+	{
+		m_db = QSqlDatabase::database("qt_sql_default_connection");
+	}
+	else
+	{
+		m_db = QSqlDatabase::addDatabase("QSQLITE");
+	}
+	m_db.setDatabaseName("mapInfo.db");
+	if (m_db.open())
+	{
+		// 创建映射表 [3/14/2023]
+		createMapTable();
+	}
 }
 
 CMapDB::~CMapDB()
@@ -170,12 +215,38 @@ CMapDB::~CMapDB()
 	m_db.close();
 }
 
-bool CMapDB::createMapTable()
+bool CMapDB::openDatabase()
 {
-
+	if (!m_db.isOpen())
+	{
+		return m_db.open();
+	}
+	return true;
 }
 
-bool CMapDB::isTableExists()
+void CMapDB::closeDatabase()
 {
+	m_db.close();
+}
 
+bool CMapDB::createMapTable()
+{
+	const QString sql = R"(
+		CREATE TABLE IF NOT EXISTS mapProjectImage_table (
+			map_id		INTEGER		PRIMARY KEY AUTOINCREMENT NOT NULL,
+			project_id	INTEGER		UNIQUE NOT NULL,
+			image_id	INTEGER		NOT NULL
+		);
+	)";
+	QSqlQuery query;
+	bool ret = query.exec(sql);
+	if (ret)
+	{
+		qDebug() << "create table success";
+	}
+	else
+	{
+		qDebug() << "create table failed" << query.lastError();
+	}
+	return ret;
 }

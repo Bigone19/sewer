@@ -33,10 +33,21 @@ SewerClient::SewerClient(QWidget *parent)
 	ui->btnDocxOutput->setEnabled(false);
 	ui->imgTabWidget->setTabVisible(0, false);
 	ui->imgTab->setAutoFillBackground(true);
+
+	// 项目配置关联数据库 [3/13/2023]
+	m_projectDB = new CProjectDB();
+	// 加载已保存项目列表 [3/14/2023]
+	m_projectDB->getAllProjects(m_lstProjects);
+	ui->listWidgetProject->addItems(m_lstProjects);
+	// 检测图片关联数据库 [3/14/2023]
+	//m_imageDB = new CImageDB();
 }
 
 SewerClient::~SewerClient()
 {
+	m_imageDB->closeDatabase();
+	m_projectDB->closeDatabase();
+	m_lstProjects.clear();
 	m_vecImgDefect.clear();
 	m_detectResVec.clear();
 	m_clsNames.clear();
@@ -151,9 +162,6 @@ void SewerClient::setImgInfo()
 
 void SewerClient::writeDocx()
 {
-	// 项目配置写入数据库 [3/13/2023]
-	m_projectDB = new CProjectDB();
-	m_projectDB->closeDatabase();
 	// 项目对应的docx文件名称 [2/12/2023]
 	QString currTime = QDateTime::currentDateTime().toString("yyyyMMdd_hh:mm");
 	setProjectDir();
@@ -307,7 +315,6 @@ void SewerClient::on_comBoxName_activated(int index)
 {
 	int com_idx = (index - 1);
 	// 更新标签后修改combox功能 [3/9/2023]
-	m_detectResVec[m_currTabIdx].first = com_idx;
 	m_vecImgDefect[m_currTabIdx].second = m_clsNames.at(com_idx);
 }
 

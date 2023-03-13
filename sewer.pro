@@ -15,7 +15,8 @@ SOURCES += \
     onnxDetector.cpp \
     onnxUtils.cpp \
     docxUtils.cpp \
-    projectcfg.cpp
+    projectcfg.cpp \
+    sqlUtils.cpp
 
 HEADERS += \
     projectdlg.h \
@@ -24,7 +25,8 @@ HEADERS += \
     onnxUtils.h \
     config.h \
     docxUtils.h \
-    projectcfg.h
+    projectcfg.h \
+    sqlUtils.h
 
 FORMS += \
     projectdlg.ui \
@@ -40,17 +42,11 @@ INCLUDEPATH+=./opencv/build/include \
              ./opencv/build/include/opencv2 \
              ./Microsoft.ML.OnnxRuntime.1.10.0/build/native/include \
              ./docx_include
-             # $$PWD/yaml-cpp \
-             # $$PWD/yaml-cpp/contrib \
-             # $$PWD/yaml-cpp/node
 DEPENDPATH+=./opencv/build/include \
             ./opencv/build/include/opencv \
             ./opencv/build/include/opencv2 \
             ./Microsoft.ML.OnnxRuntime.1.10.0/build/native/include \
             ./docx_include
-            # $$PWD/yaml-cpp \
-            # $$PWD/yaml-cpp/contrib \
-            # $$PWD/yaml-cpp/node
 LIBS += -L./opencv/build/x64/vc15/lib \
         -lopencv_world452d \
         -lopencv_world452\
@@ -58,8 +54,6 @@ LIBS += -L./opencv/build/x64/vc15/lib \
         -lonnxruntime \
         -L./lib \
         -ldocxlib
-        # $$PWD/yaml-cpp/lib/yaml-cpp.lib \
-        # $$PWD/yaml-cpp/lib/yaml-cppd.lib
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

@@ -7,21 +7,22 @@
 /* 2023/03/11                                                           */
 /************************************************************************/
 
-#include <QSqlDatabase>
-#include <QSqlError>
-#include <QSqlQuery>
 #include <QtCore>
 
+#include "sqlUtils.h"
+
+using std::vector;
+
 // 项目属性结构体 [3/13/2023]
-struct ProjectInfo
+struct ImageInfo
 {
-	QString s_name;
+	QString s_path;
 	QString s_defectName;
 	int s_defectLevel;
 
-	ProjectInfo& operator=(const ProjectInfo& info)
+	ImageInfo& operator=(const ImageInfo& info)
 	{
-		this->s_name = info.s_name;
+		this->s_path = info.s_path;
 		this->s_defectName = info.s_defectName;
 		this->s_defectLevel = info.s_defectLevel;
 		return *this;
@@ -31,7 +32,7 @@ struct ProjectInfo
 class CMapDB;
 class CImageDB;
 // 项目数据 [3/13/2023]
-class CProjectDB
+class CProjectDB : public CSqlUtils
 {
 public:
 	CProjectDB();
@@ -41,7 +42,13 @@ public:
 	void insertData(const QString& name);
 	void deleteData(const QString& name);
 	void updateName(const QString& name);
-	ProjectInfo searchData(const QString& name);
+	void getAllProjects(QStringList& lstProjects);
+	/**
+	* @brief: 打开数据库
+	* @param: 
+	* @date: 2023/03/14
+	*/
+	bool openDatabase();
 	/**
 	* @brief: 关闭数据库
 	* @param: 
@@ -55,17 +62,8 @@ private:
 	* @date: 2023/03/13
 	*/
 	bool createProjectTable();
-	/**
-	* @brief: 检查是否表已存在
-	* @param: 
-	* @date: 2023/03/13
-	*/
-	bool isTableExists();
 
 private:
-	QSqlDatabase m_db;
-
-	friend class CImageDB;
 };
 
 // 项目中检测修改完成的图片数据 [3/13/2023]
@@ -76,14 +74,16 @@ public:
 	virtual ~CImageDB();
 
 	// CRUD [3/13/2023]
-	void insertData(const QString& strPath);
+	void insertData(const QString& strPath, const QString&  defectName, int defectLevel);
 	void deleteData(const QString& strPath);
-	void updateName(const QString& strPath);
-	ProjectInfo searchData(const QString& strPath);
+	void updateDefectName(const QString& strPath, const QString& defectName);
+	void updateDefectLevel(const QString& strPath, int defectLevel);
+	ImageInfo searchData(const QString& strPath);
 
+	bool openDatabase();
+	void closeDatabase();
 private:
 	bool createImageTable();
-	bool isTableExists();
 private:
 	QSqlDatabase m_db;
 };
@@ -94,9 +94,11 @@ class CMapDB
 public:
 	CMapDB();
 	virtual ~CMapDB();
+
+	bool openDatabase();
+	void closeDatabase();
 private:
 	bool createMapTable();
-	bool isTableExists();
 private:
 	QSqlDatabase m_db;
 };
