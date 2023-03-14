@@ -37,10 +37,9 @@ bool CProjectDB::createProjectTable()
 void CProjectDB::insertData(const QString& name)
 {
 	QSqlQuery query;
-	bool ret = query.exec(QString(
+	query.exec(QString(
 		R"(INSERT INTO projects_table(project_name) VALUES('%1');)"
 	).arg(name));
-	qDebug() << "create table failed" << query.lastError();
 }
 
 void CProjectDB::deleteData(const QString& name)
@@ -88,15 +87,6 @@ void CProjectDB::closeDatabase()
 
 CImageDB::CImageDB()
 {
-	if (QSqlDatabase::contains("qt_sql_default_connection"))
-	{
-		m_db = QSqlDatabase::database("qt_sql_default_connection");
-	}
-	else
-	{
-		m_db = QSqlDatabase::addDatabase("QSQLITE");
-	}
-	m_db.setDatabaseName("imageInfo.db");
 	if (m_db.open())
 	{
 		// 创建图片表 [3/14/2023]
@@ -183,26 +173,17 @@ bool CImageDB::createImageTable()
 	bool ret = query.exec(sql);
 	if (ret)
 	{
-		qDebug() << "create table success";
+		qDebug() << "initial image table success";
 	}
 	else
 	{
-		qDebug() << "create table failed" << query.lastError();
+		qDebug() << "create image table failed" << query.lastError();
 	}
 	return ret;
 }
 
 CMapDB::CMapDB()
 {
-	if (QSqlDatabase::contains("qt_sql_default_connection"))
-	{
-		m_db = QSqlDatabase::database("qt_sql_default_connection");
-	}
-	else
-	{
-		m_db = QSqlDatabase::addDatabase("QSQLITE");
-	}
-	m_db.setDatabaseName("mapInfo.db");
 	if (m_db.open())
 	{
 		// 创建映射表 [3/14/2023]
@@ -213,6 +194,19 @@ CMapDB::CMapDB()
 CMapDB::~CMapDB()
 {
 	m_db.close();
+}
+
+void CMapDB::insertData(int projectIdx, int imageIdx)
+{
+	QSqlQuery query;
+	query.exec(QString(
+		R"(INSERT INTO mapProjectImage_table(project_id, image_id) VALUES(%1,%2))"
+	).arg(projectIdx).arg(imageIdx));
+}
+
+void CMapDB::getAllMapInfo(unordered_map<int, vector<int>>& mapProjectImage)
+{
+
 }
 
 bool CMapDB::openDatabase()
@@ -235,18 +229,18 @@ bool CMapDB::createMapTable()
 		CREATE TABLE IF NOT EXISTS mapProjectImage_table (
 			map_id		INTEGER		PRIMARY KEY AUTOINCREMENT NOT NULL,
 			project_id	INTEGER		UNIQUE NOT NULL,
-			image_id	INTEGER		NOT NULL
+			image_id	INTEGER		UNIQUE NOT NULL
 		);
 	)";
 	QSqlQuery query;
 	bool ret = query.exec(sql);
 	if (ret)
 	{
-		qDebug() << "create table success";
+		qDebug() << "initial map table success";
 	}
 	else
 	{
-		qDebug() << "create table failed" << query.lastError();
+		qDebug() << "create map table failed" << query.lastError();
 	}
 	return ret;
 }

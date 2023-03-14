@@ -17,5 +17,4 @@
 // 成功信息 [2/4/2023]
 #define SUCCEED_CODE_1    QString::fromLocal8Bit("ONNX检测器初始化成功 ")
 #define SUCCEED_CODE_2    QString::fromLocal8Bit("创建项目文件夹成功 ") 
-
 #endif

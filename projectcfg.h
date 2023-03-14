@@ -8,10 +8,12 @@
 /************************************************************************/
 
 #include <QtCore>
+#include <unordered_map>
 
 #include "sqlUtils.h"
 
 using std::vector;
+using std::unordered_map;
 
 // 项目属性结构体 [3/13/2023]
 struct ImageInfo
@@ -62,12 +64,10 @@ private:
 	* @date: 2023/03/13
 	*/
 	bool createProjectTable();
-
-private:
 };
 
 // 项目中检测修改完成的图片数据 [3/13/2023]
-class CImageDB
+class CImageDB : public CSqlUtils
 {
 public:
 	CImageDB();
@@ -84,23 +84,23 @@ public:
 	void closeDatabase();
 private:
 	bool createImageTable();
-private:
-	QSqlDatabase m_db;
 };
 
 // 映射关系表 [3/13/2023]
-class CMapDB
+class CMapDB : public CSqlUtils
 {
 public:
 	CMapDB();
 	virtual ~CMapDB();
 
+	// CRUD [3/15/2023]
+	void insertData(int projectIdx, int imageIdx);
+	void getAllMapInfo(unordered_map<int, vector<int> >& mapProjectImage);
+
 	bool openDatabase();
 	void closeDatabase();
 private:
 	bool createMapTable();
-private:
-	QSqlDatabase m_db;
 };
 
 #endif // !__PROJECTCFG_H__

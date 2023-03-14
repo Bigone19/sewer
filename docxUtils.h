@@ -31,7 +31,7 @@ namespace DocxUtils
 		* @param: 
 		* @date: 2023/02/10
 		*/
-		Table* addTemplate(const string& imgPath, const string& defectName);
+		Table* addTemplate(const string& imgPath, const string& defectName, int defectLevel);
 	};
 }
 

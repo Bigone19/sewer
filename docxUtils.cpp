@@ -2,7 +2,16 @@
 #include "parts/documentpart.h"
 #include "table.h"
 
+#include <unordered_map>
 #include <QFile>
+
+using std::unordered_map;
+
+const unordered_map<int, string> g_mapLevel =
+{
+	{1, "1级"}, {2, "2级"},
+	{3, "3级"}, {4, "4级"}
+};
 
 namespace DocxUtils
 {
@@ -17,7 +26,7 @@ namespace DocxUtils
 	{
 	}
 
-	Table* CDox::addTemplate(const string& imgPath, const string& defectName)
+	DocxUtils::Table* CDox::addTemplate(const string& imgPath, const string& defectName, int defectLevel)
 	{
 		// 获取图片文件名称 [2/16/2023]
 		size_t pos = imgPath.find_last_of('/');
@@ -54,6 +63,7 @@ namespace DocxUtils
 		pTable->getCell(6, 5)->addText(QString::fromUtf8("照片序号或说明"));
 		
 		pTable->getCell(7, 1)->addText(QString::fromStdString(defectName));
+		pTable->getCell(7, 3)->addText(QString::fromStdString(g_mapLevel.at(defectLevel)));
 		pTable->getCell(7, 5)->addText(QString::fromUtf8("照片1"));
 
 		pTable->getCell(8, 0)->addText(QString::fromUtf8("备注"));

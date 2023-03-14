@@ -4,7 +4,6 @@
 #include <QMainWindow>
 #include <QFileDialog>
 #include <map>
-#include <unordered_map>
 
 // update [2/2/2023 ]
 #include "onnxDetector.h"
@@ -12,11 +11,25 @@
 #include "docxUtils.h"
 
 using namespace DocxUtils;
-using std::unordered_map;
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class SewerClient; }
 QT_END_NAMESPACE
+
+struct DetectInfo
+{
+    string s_imagePath;     // 图片路径 [3/15/2023]
+    string s_defectName;    // 缺陷名称 [3/15/2023]
+    int s_defectLevel;      // 缺陷等级 [3/15/2023]
+    float s_confVal;        // 置信值 [3/15/2023]
+
+    DetectInfo(string& strPath, string& strDetectName, int defectLevel, float conVal)
+        : s_imagePath(strPath)
+        , s_defectName(strDetectName)
+        , s_defectLevel(defectLevel)
+        , s_confVal(conVal)
+    {}
+};
 
 class CProjectDB;
 class CImageDB;
@@ -73,6 +86,12 @@ private slots:
     * @date: 2023/03/09
     */
     void on_listWidgetProject_doubleClicked(const QModelIndex &index);
+    /**
+    * @brief: 更新缺陷等级
+    * @param: 
+    * @date: 2023/03/15
+    */
+    void on_comBoxLevel_activated(int index);
 
 private:
     /**
@@ -129,6 +148,12 @@ private:
     * @date: 2023/02/17
     */
     void displayImg(string& imgPath, bool isMuti=false);
+    /**
+    * @brief: 设置缺陷等级
+    * @param: 
+    * @date: 2023/03/15
+    */
+    int setDetectLevel(float confVal);
 private:
     Ui::SewerClient *ui;
 
@@ -148,13 +173,14 @@ private:
 
     bool m_isDetect;            // 是否点击检测按钮 [2/16/2023]
 
-    vector<pair<string, string> > m_vecImgDefect;   // <图片路径-缺陷名称> [3/1/2023]
-    unordered_map<string, int> m_mapDefectNameIdx;  // combox defect name map [3/4/2023]
+    vector<DetectInfo> m_vecDetectInfo;             // 检测图片信息 [3/15/2023]
+    //unordered_map<string, int> m_mapDefectNameIdx;  // combox defect name map [3/4/2023]
     int m_currTabIdx;  // 当前tab id [3/9/2023]
 
     CProjectDB* m_projectDB;        // 项目配置数据库写入 [3/13/2023]
     QStringList m_lstProjects;      // 已保存项目列表 [3/14/2023]
     CImageDB* m_imageDB;            // 检测后图片数据库写入 [3/14/2023]
+    CMapDB* m_mapDB;                // 映射关系数据库 [3/15/2023]
 
     friend class projectDlg;
 };
