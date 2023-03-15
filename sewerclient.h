@@ -154,6 +154,13 @@ private:
     * @date: 2023/03/15
     */
     int setDetectLevel(float confVal);
+    // （可复用）辅助函数：清除图片 Tab 中所有的子部件 [3/16/2023]
+    void clearImgTab();
+    // （可复用）辅助函数：在图片 Tab 中添加一张图片 [3/16/2023]
+    void addImgLabel(const QString& imgName, const QImage& img);
+    // （可复用）辅助函数：在图片 Tab 中添加一个包含图片信息的 widget
+    void addImgWidget(const QString& imgName, const QImage& img);
+
 private:
     Ui::SewerClient *ui;
 

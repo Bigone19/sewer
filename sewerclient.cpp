@@ -273,8 +273,9 @@ void SewerClient::autoScaleImg(Mat& srcImg)
 
 void SewerClient::displayImg(string& imgPath, bool isMuti/*=false*/)
 {
-	size_t pos = imgPath.find_last_of('/');
-	QString strImgName = QString::fromStdString(imgPath.substr(pos + 1));
+#if 0
+	const size_t pos = imgPath.find_last_of('/');
+	const QString strImgName = QString::fromStdString(imgPath.substr(pos + 1));
 	QImage img;
 	img.load(QString::fromStdString(imgPath));
 	QPalette palette = ui->imgTab->palette();
@@ -302,6 +303,30 @@ void SewerClient::displayImg(string& imgPath, bool isMuti/*=false*/)
 		tmpVBoxLayout->addWidget(tmpLabel);
 		ui->imgTabWidget->addTab(tmpWidget, strImgName);
 	}
+#endif
+	// 从路径中获取文件名
+	const auto pos = imgPath.find_last_of('/');
+	const QString strImgName = QString::fromStdString(imgPath.substr(pos + 1));
+
+	// 加载图片
+	QImage img;
+	img.load(QString::fromStdString(imgPath));
+
+	// 获取 tab 的 palette
+	const QPalette& palette = ui->imgTab->palette();
+
+	// 根据 isMuti 分别处理单张和多张图片
+	if (!isMuti)
+	{
+		// 单张图片，清空 tab 并添加一张新的图片
+		clearImgTab();
+		addImgLabel(strImgName, img);
+	}
+	else
+	{
+		// 多张图片，创建 widget 并添加对应的图片信息
+		addImgWidget(strImgName, img);
+	}
 }
 
 int SewerClient::setDetectLevel(float confVal)
@@ -323,6 +348,50 @@ int SewerClient::setDetectLevel(float confVal)
 	{
 		return 1;
 	}
+}
+
+void SewerClient::clearImgTab()
+{
+	QLayout* layout = ui->imgTab->layout();
+	if (layout != nullptr)
+	{
+		while (auto item = layout->takeAt(0))
+		{
+			delete item->widget();
+			delete item;
+		}
+		delete layout;
+	}
+}
+
+void SewerClient::addImgLabel(const QString& imgName, const QImage& img)
+{
+	QLabel* label = new QLabel(ui->imgTab);
+	label->setPixmap(QPixmap::fromImage(img));
+	label->setAlignment(Qt::AlignCenter);
+
+	QVBoxLayout* layout = new QVBoxLayout(ui->imgTab);
+	layout->addWidget(label);
+	ui->imgTab->setLayout(layout);
+
+	ui->imgTabWidget->setTabVisible(0, true);
+	ui->imgTabWidget->setTabText(0, imgName);
+}
+
+void SewerClient::addImgWidget(const QString& imgName, const QImage& img)
+{
+	QWidget* widget = new QWidget(ui->imgTabWidget);
+	widget->setFixedSize(img.size());
+
+	QLabel* label = new QLabel(widget);
+	label->setPixmap(QPixmap::fromImage(img));
+	label->setAlignment(Qt::AlignCenter);
+
+	QVBoxLayout* layout = new QVBoxLayout(widget);
+	layout->addWidget(label);
+	widget->setLayout(layout);
+
+	ui->imgTabWidget->addTab(widget, imgName);
 }
 
 void SewerClient::on_btnNewProject_clicked()

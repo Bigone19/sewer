@@ -20,7 +20,7 @@ struct ImageInfo
 {
 	QString s_path;
 	QString s_defectName;
-	int s_defectLevel;
+	int s_defectLevel = 0;
 
 	ImageInfo& operator=(const ImageInfo& info)
 	{
@@ -31,8 +31,6 @@ struct ImageInfo
 	}
 };
 
-class CMapDB;
-class CImageDB;
 // 项目数据 [3/13/2023]
 class CProjectDB : public CSqlUtils
 {
@@ -64,6 +62,14 @@ private:
 	* @date: 2023/03/13
 	*/
 	bool createProjectTable();
+	/**
+	* @brief: 更新名称-ID映射关系
+	* @param: 
+	* @date: 2023/03/16
+	*/
+	void updateMap();
+private:
+	unordered_map<QString, int> m_mapNameIdx;	// 名称-ID映射关系 [3/16/2023]
 };
 
 // 项目中检测修改完成的图片数据 [3/13/2023]
@@ -96,6 +102,9 @@ public:
 	// CRUD [3/15/2023]
 	void insertData(int projectIdx, int imageIdx);
 	void getAllMapInfo(unordered_map<int, vector<int> >& mapProjectImage);
+	void deleteDataFromImg(int imageIdx);
+	void deleteDataFromProject(int projectIdx);
+	void updateImageIdx(int projectIdx, int imageIdx);
 
 	bool openDatabase();
 	void closeDatabase();

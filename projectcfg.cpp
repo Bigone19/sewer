@@ -16,28 +16,34 @@ CProjectDB::~CProjectDB()
 bool CProjectDB::createProjectTable()
 {
 	const QString sql = R"(
-		CREATE TABLE IF NOT EXISTS projects_table (
-			project_id			INTEGER   PRIMARY KEY AUTOINCREMENT NOT NULL,
-			project_name		CHAR (50) UNIQUE NOT NULL
-		);
-	)";
+        CREATE TABLE IF NOT EXISTS projects_table (
+            project_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+            project_name CHAR (50) UNIQUE NOT NULL
+        )
+    )";
 	QSqlQuery query;
-	bool ret = query.exec(sql);
-	if (ret)
+	if (query.exec(sql))
 	{
 		qDebug() << "initial projects table success";
+		return true;
 	}
 	else
 	{
-		qDebug() << query.lastError();
+		qWarning() << "failed to create projects table: " << query.lastError().text();
+		return false;
 	}
-	return ret;
+}
+
+
+void CProjectDB::updateMap()
+{
+
 }
 
 void CProjectDB::insertData(const QString& name)
 {
 	QSqlQuery query;
-	query.exec(QString(
+	bool ret = query.exec(QString(
 		R"(INSERT INTO projects_table(project_name) VALUES('%1');)"
 	).arg(name));
 }
@@ -58,6 +64,7 @@ void CProjectDB::updateName(const QString& name)
 	).arg(name));
 }
 
+// 仅启动初始化时加载一次 [3/16/2023]
 void CProjectDB::getAllProjects(QStringList& lstProjects)
 {
 	// 获取全部项目列表 [3/14/2023]
@@ -67,9 +74,13 @@ void CProjectDB::getAllProjects(QStringList& lstProjects)
 	));
 	while (query.next())
 	{
-		lstProjects.append(query.value(1).toString());
+		int proIdx = query.value(0).toInt();
+		QString proName = query.value(1).toString();
+		lstProjects.append(proName);
+		// 初始化当前名称-ID映射关系 [3/16/2023]
 	}
 }
+
 
 bool CProjectDB::openDatabase()
 {
@@ -118,17 +129,25 @@ void CImageDB::deleteData(const QString& strPath)
 void CImageDB::updateDefectName(const QString& strPath, const QString& defectName)
 {
 	QSqlQuery query;
-	query.exec(QString(
-		R"(UPDATE images_table SET defect_name='%2' WHERE image_path='%1';)"
-	).arg(strPath).arg(defectName));
+	QString strSql = R"(UPDATE images_table SET defect_name=:defectName WHERE image_path=:imagePath)";
+	query.prepare(strSql);
+
+	query.bindValue(":imagePath", strPath);
+	query.bindValue(":defectName", defectName);
+	if (!query.exec()) 
+	{
+		qDebug() << "Failed to execute updateDefectName query: " << query.lastError().text();
+		return;
+	}
 }
 
 void CImageDB::updateDefectLevel(const QString& strPath, int defectLevel)
 {
 	QSqlQuery query;
-	query.exec(QString(
-		R"(UPDATE images_table SET defect_level=%2 WHERE image_path='%1';)"
-	).arg(strPath).arg(defectLevel));
+	query.prepare("UPDATE images_table SET defect_level= :defectLevel WHERE image_path=:path");
+	query.bindValue(":defectLevel", defectLevel);
+	query.bindValue(":path", strPath);
+	query.exec();
 }
 
 ImageInfo CImageDB::searchData(const QString& strPath)
@@ -136,12 +155,13 @@ ImageInfo CImageDB::searchData(const QString& strPath)
 	ImageInfo info;
 	info.s_path = strPath;
 	QSqlQuery query;
-	query.exec(QString(
-		R"(SELECT defect_name,defect_level FROM images_table
-			WHERE image_path='%1';)"
-	));
-	info.s_defectName = query.value(0).toString();
-	info.s_defectLevel = query.value(1).toInt();
+	query.prepare("SELECT defect_name, defect_level FROM images_table WHERE image_path=:path");
+	query.bindValue(":path", strPath);
+	if (query.exec() && query.next()) 
+	{
+		info.s_defectName = query.value(0).toString();
+		info.s_defectLevel = query.value(1).toInt();
+	}
 	return info;
 }
 
@@ -206,7 +226,48 @@ void CMapDB::insertData(int projectIdx, int imageIdx)
 
 void CMapDB::getAllMapInfo(unordered_map<int, vector<int>>& mapProjectImage)
 {
+	QSqlQuery query;
+	query.exec(QString(
+		R"(SELECT * FROM mapProjectImage_table;)"
+	));
+	while (query.next())
+	{
+		int projectIdx = query.value(1).toInt();
+		int imageIdx = query.value(2).toInt();
+		if (mapProjectImage.find(projectIdx) != mapProjectImage.end())
+		{
+			mapProjectImage[projectIdx].emplace_back(imageIdx);
+		}
+		else
+		{
+			// 未插入项目id补充 [3/16/2023]
+			mapProjectImage.emplace(projectIdx, imageIdx);
+		}
+	}
+}
 
+void CMapDB::deleteDataFromImg(int imageIdx)
+{
+	QSqlQuery query;
+	query.exec(QString(
+		R"(DELETE FROM mapProjectImage_table WHERE image_id=%1)"
+	).arg(imageIdx));
+}
+
+void CMapDB::deleteDataFromProject(int projectIdx)
+{
+	QSqlQuery query;
+	query.exec(QString(
+		R"(DELETE FROM mapProjectImage_table WHERE project_id=%1)"
+	).arg(projectIdx));
+}
+
+void CMapDB::updateImageIdx(int projectIdx, int imageIdx)
+{
+	QSqlQuery query;
+	query.exec(QString(
+		R"(UPDATE mapProjectImage_table SET project_id=%1 WHERE image_id=%2)"
+	).arg(projectIdx).arg(imageIdx));
 }
 
 bool CMapDB::openDatabase()
