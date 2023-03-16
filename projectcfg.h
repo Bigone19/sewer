@@ -15,16 +15,39 @@
 using std::vector;
 using std::unordered_map;
 
-// 项目属性结构体 [3/13/2023]
+// 检测图片属性 [3/13/2023]
 struct ImageInfo
 {
-	QString s_path;
+	int s_idx = -1;
+	QString s_name;	// 文件名称 [3/17/2023]
+	QString s_absPath;
 	QString s_defectName;
 	int s_defectLevel = 0;
 
+	ImageInfo() {}
+
+	ImageInfo(int idx, const QString& strName, const QString& strPath,
+		const QString& defectName, int defectLevel)
+		: s_idx(idx)
+		, s_name(strName)
+		, s_absPath(strPath)
+		, s_defectName(defectName)
+		, s_defectLevel(defectLevel)
+	{}
+
+	ImageInfo(const QString& strName, const QString& strPath, 
+		const QString& defectName, int defectLevel)
+		: s_name(strName)
+		, s_absPath(strPath)
+		, s_defectName(defectName)
+		, s_defectLevel(defectLevel)
+	{}
+
 	ImageInfo& operator=(const ImageInfo& info)
 	{
-		this->s_path = info.s_path;
+		this->s_idx = info.s_idx;
+		this->s_name = info.s_name;
+		this->s_absPath = info.s_absPath;
 		this->s_defectName = info.s_defectName;
 		this->s_defectLevel = info.s_defectLevel;
 		return *this;
@@ -39,7 +62,7 @@ public:
 	virtual ~CProjectDB();
 
 	// CRUD [3/13/2023]
-	void insertData(const QString& name);
+	void insertData(const QString& name);	// 插入数据更新映射 [3/17/2023]
 	void deleteData(const QString& name);
 	void updateName(const QString& name);
 	void getAllProjects(QStringList& lstProjects);
@@ -57,19 +80,21 @@ public:
 	void closeDatabase();
 private:
 	/**
-	* @brief: 创建表
+	* @brief: 初始化表
 	* @param: 
 	* @date: 2023/03/13
 	*/
-	bool createProjectTable();
+	bool initialProjectTable();
 	/**
 	* @brief: 更新名称-ID映射关系
 	* @param: 
 	* @date: 2023/03/16
 	*/
-	void updateMap();
+	void updateMap(const QString& proName);
 private:
 	unordered_map<QString, int> m_mapNameIdx;	// 名称-ID映射关系 [3/16/2023]
+
+	friend class SewerClient;
 };
 
 // 项目中检测修改完成的图片数据 [3/13/2023]
@@ -80,16 +105,25 @@ public:
 	virtual ~CImageDB();
 
 	// CRUD [3/13/2023]
-	void insertData(const QString& strPath, const QString&  defectName, int defectLevel);
+	void insertData(const QString& strName,const QString& strPath, const QString&  defectName, int defectLevel);
+	void insertData(ImageInfo& info);	// overload [3/17/2023]
 	void deleteData(const QString& strPath);
 	void updateDefectName(const QString& strPath, const QString& defectName);
 	void updateDefectLevel(const QString& strPath, int defectLevel);
 	ImageInfo searchData(const QString& strPath);
+	/**
+	* @brief: 获取图片名称-属性映射
+	* @param: 
+	* @date: 2023/03/17
+	*/
+	void loadMapNameIdx();
 
 	bool openDatabase();
 	void closeDatabase();
 private:
-	bool createImageTable();
+	bool initialImageTable();
+private:
+	unordered_map<QString, ImageInfo> m_mapNameIdx;	// 名称-ID映射关系 [3/17/2023]
 };
 
 // 映射关系表 [3/13/2023]
@@ -101,7 +135,8 @@ public:
 
 	// CRUD [3/15/2023]
 	void insertData(int projectIdx, int imageIdx);
-	void getAllMapInfo(unordered_map<int, vector<int> >& mapProjectImage);
+	// 项目-图片映射 [3/17/2023]
+	void getAllMapInfo();
 	void deleteDataFromImg(int imageIdx);
 	void deleteDataFromProject(int projectIdx);
 	void updateImageIdx(int projectIdx, int imageIdx);
@@ -109,7 +144,9 @@ public:
 	bool openDatabase();
 	void closeDatabase();
 private:
-	bool createMapTable();
+	bool initialMapTable();
+private:
+	unordered_map<int, vector<int> > m_mapProImgIdx;		// 项目图片 [3/17/2023]
 };
 
 #endif // !__PROJECTCFG_H__

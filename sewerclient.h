@@ -18,13 +18,16 @@ QT_END_NAMESPACE
 
 struct DetectInfo
 {
-    string s_imagePath;     // 图片路径 [3/15/2023]
+    string s_imgName;       // 简化路径 [3/17/2023]
+    string s_absPath;       // 图片路径 [3/15/2023]
     string s_defectName;    // 缺陷名称 [3/15/2023]
     int s_defectLevel;      // 缺陷等级 [3/15/2023]
     float s_confVal;        // 置信值 [3/15/2023]
 
-    DetectInfo(string& strPath, string& strDetectName, int defectLevel, float conVal)
-        : s_imagePath(strPath)
+    DetectInfo(const string& strName, const string& strAbsPath, 
+        const string& strDetectName, int defectLevel, float conVal)
+        : s_imgName(strName)
+        , s_absPath(strAbsPath)
         , s_defectName(strDetectName)
         , s_defectLevel(defectLevel)
         , s_confVal(conVal)
@@ -176,12 +179,12 @@ private:
     QString m_docxName;         // docx文件名 [2/12/2023]
     QString m_docxDirPath;      // docx结果文件夹路径 [2/12/2023]
     QString m_projectDirPath;   // 项目文件夹路径 [2/14/2023]
+
     projectDlg* m_wProject;     // 弹出项目窗口 [2/12/2023]
 
     bool m_isDetect;            // 是否点击检测按钮 [2/16/2023]
 
     vector<DetectInfo> m_vecDetectInfo;             // 检测图片信息 [3/15/2023]
-    //unordered_map<string, int> m_mapDefectNameIdx;  // combox defect name map [3/4/2023]
     int m_currTabIdx;  // 当前tab id [3/9/2023]
 
     CProjectDB* m_projectDB;        // 项目配置数据库写入 [3/13/2023]
@@ -189,6 +192,10 @@ private:
     CImageDB* m_imageDB;            // 检测后图片数据库写入 [3/14/2023]
     CMapDB* m_mapDB;                // 映射关系数据库 [3/15/2023]
 
+    int m_currProjectIdx;           // 当前项目id [3/17/2023]
+    QString m_currProjectName;      // 当前项目名称 [3/17/2023]
+
     friend class projectDlg;
+    friend class CProjectDB;
 };
 #endif // SEWERCLIENT_H

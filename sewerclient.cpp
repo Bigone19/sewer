@@ -42,6 +42,8 @@ SewerClient::SewerClient(QWidget *parent)
 	ui->listWidgetProject->addItems(m_lstProjects);
 	
 	m_imageDB = new CImageDB();
+	// 加载图片信息 [3/17/2023]
+	m_imageDB->loadMapNameIdx();
 	m_mapDB = new CMapDB();
 }
 
@@ -55,7 +57,6 @@ SewerClient::~SewerClient()
 	m_detectResVec.clear();
 	m_clsNames.clear();
     m_fileList.clear();
-	delete m_wProject;
     delete ui;
 }
 
@@ -175,10 +176,17 @@ void SewerClient::writeDocx()
 	m_imageDB->openDatabase();
 	for (auto& info : m_vecDetectInfo)
 	{
-		Table* pTable = m_docx->addTemplate(info.s_imagePath, info.s_defectName, info.s_defectLevel);
+		Table* pTable = m_docx->addTemplate(info.s_absPath, info.s_defectName, info.s_defectLevel);
 		// 写入数据库 [3/15/2023]
-		m_imageDB->insertData(QString::fromStdString(info.s_imagePath), 
-			QString::fromStdString(info.s_defectName), info.s_defectLevel);
+		ImageInfo tmpInfo = 
+		{ 
+			QString::fromStdString(info.s_imgName),
+			QString::fromStdString(info.s_absPath),
+			QString::fromStdString(info.s_defectName),
+			info.s_defectLevel
+		};
+		m_imageDB->insertData(tmpInfo);
+		// TODO添加映射关系获得图片id [3/17/2023]
 	}
 	m_imageDB->closeDatabase();
 	m_docx->save(m_docxName);
@@ -215,7 +223,7 @@ void SewerClient::detectInfoUtil(QFileInfo& info, bool isMuti /*=false*/)
 		// 图片展示 [2/17/2023]
 		displayImg(dstImgPath, isMuti);
 		// <图片路径-缺陷名称>映射关系改为结构体 [3/15/2023]
-		m_vecDetectInfo.emplace_back(DetectInfo(dstImgPath, defectName, defectLevel, resCls.second));
+		m_vecDetectInfo.emplace_back(DetectInfo(imgName, dstImgPath, defectName, defectLevel, resCls.second));
 	}
 	catch (const cv::Exception& e)
 	{
@@ -405,6 +413,8 @@ void SewerClient::on_btnNewProject_clicked()
 
 void SewerClient::on_btnDocxOutput_clicked()
 {
+	// 当前项目id [3/17/2023]
+	m_currProjectIdx = m_projectDB->m_mapNameIdx[m_currProjectName];
 	// 写入docx [2/26/2023]
 	writeDocx();
 	m_lstFileInfo.clear();
