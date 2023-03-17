@@ -121,9 +121,19 @@ public:
 	bool openDatabase();
 	void closeDatabase();
 private:
+	/**
+	* @brief: 获取最后添加图片ID
+	* @param: 
+	* @date: 2023/03/18
+	*/
+	void getLastImageID();
+	// 初始化 [3/18/2023]
 	bool initialImageTable();
 private:
 	unordered_map<QString, ImageInfo> m_mapNameIdx;	// 名称-ID映射关系 [3/17/2023]
+	int m_lastImgIdx;	// 最后插入图片ID [3/18/2023]
+
+	friend class SewerClient;
 };
 
 // 映射关系表 [3/13/2023]
@@ -136,7 +146,7 @@ public:
 	// CRUD [3/15/2023]
 	void insertData(int projectIdx, int imageIdx);
 	// 项目-图片映射 [3/17/2023]
-	void getAllMapInfo();
+	void loadAllMapInfo();
 	void deleteDataFromImg(int imageIdx);
 	void deleteDataFromProject(int projectIdx);
 	void updateImageIdx(int projectIdx, int imageIdx);

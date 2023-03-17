@@ -45,6 +45,7 @@ SewerClient::SewerClient(QWidget *parent)
 	// 加载图片信息 [3/17/2023]
 	m_imageDB->loadMapNameIdx();
 	m_mapDB = new CMapDB();
+	m_mapDB->loadAllMapInfo();
 }
 
 SewerClient::~SewerClient()
@@ -87,8 +88,25 @@ void SewerClient::on_btnSelectFile_clicked()
 		{
 			// 检测按键 [2/27/2023]
 			ui->btnDetect->setEnabled(true);
+			// 清除tab [3/18/2023]
+			int tabCount = ui->imgTabWidget->count();
+			if (tabCount > 1)
+			{
+				clearImgTab();
+				for (int i = 1; i < tabCount; i++)
+				{
+					removeImgWidget(i);
+				}
+			}
 		}
 	}
+}
+
+void SewerClient::removeImgWidget(int index)
+{
+	QWidget* widget = ui->imgTabWidget->widget(index);
+	ui->imgTabWidget->removeTab(index);
+	delete widget;
 }
 
 
@@ -186,7 +204,8 @@ void SewerClient::writeDocx()
 			info.s_defectLevel
 		};
 		m_imageDB->insertData(tmpInfo);
-		// TODO添加映射关系获得图片id [3/17/2023]
+		// 添加映射关系获得图片id [3/18/2023]
+		m_mapDB->insertData(m_currProjectIdx, m_imageDB->m_lastImgIdx);
 	}
 	m_imageDB->closeDatabase();
 	m_docx->save(m_docxName);

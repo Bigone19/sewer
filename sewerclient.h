@@ -163,7 +163,8 @@ private:
     void addImgLabel(const QString& imgName, const QImage& img);
     // （可复用）辅助函数：在图片 Tab 中添加一个包含图片信息的 widget
     void addImgWidget(const QString& imgName, const QImage& img);
-
+    //  [3/18/2023]
+    void removeImgWidget(int index);
 private:
     Ui::SewerClient *ui;
 
@@ -197,5 +198,6 @@ private:
 
     friend class projectDlg;
     friend class CProjectDB;
+    friend class CImageDB;
 };
 #endif // SEWERCLIENT_H

@@ -148,13 +148,17 @@ void CImageDB::insertData(const QString& strName, const QString& strPath, const 
 void CImageDB::insertData(ImageInfo& info)
 {
 	QSqlQuery query;
-	QString strSql = R"(INSERT INTO images_table(image_name,image_path,defect_name,defect_level) VALUES(:name,:path,:defectName,:defectLevel);)";
+	QString strSql = R"(
+		INSERT INTO images_table(image_name,image_path,defect_name,defect_level) VALUES(:name,:path,:defectName,:defectLevel);
+	)";
 	query.prepare(strSql);
 	query.bindValue(":name", info.s_name);
 	query.bindValue(":path", info.s_absPath);
 	query.bindValue(":defectName", info.s_defectName);
 	query.bindValue(":defectLevel", info.s_defectLevel);
 	query.exec();
+	// 获取插入最后图片ID [3/18/2023]
+	getLastImageID();
 }
 
 void CImageDB::deleteData(const QString& strPath)
@@ -247,6 +251,17 @@ void CImageDB::closeDatabase()
 	m_mapNameIdx.clear();
 }
 
+void CImageDB::getLastImageID()
+{
+	QString strSql = R"(SELECT last_insert_rowid() FROM images_table)";
+	QSqlQuery query;
+	query.prepare(strSql);
+	if (query.exec() && query.first())
+	{
+		m_lastImgIdx = query.value(0).toInt();
+	}
+}
+
 bool CImageDB::initialImageTable()
 {
 	const QString sql = R"(
@@ -294,7 +309,7 @@ void CMapDB::insertData(int projectIdx, int imageIdx)
 	query.exec();
 }
 
-void CMapDB::getAllMapInfo()
+void CMapDB::loadAllMapInfo()
 {
 	QSqlQuery query;
 	query.exec(QString(
@@ -364,8 +379,8 @@ bool CMapDB::initialMapTable()
 	const QString sql = R"(
 		CREATE TABLE IF NOT EXISTS mapProjectImage_table (
 			map_id		INTEGER		PRIMARY KEY AUTOINCREMENT NOT NULL,
-			project_id	INTEGER		UNIQUE NOT NULL,
-			image_id	INTEGER		UNIQUE NOT NULL
+			project_id	INTEGER		NOT NULL,
+			image_id	INTEGER		NOT NULL
 		);
 	)";
 	QSqlQuery query;
