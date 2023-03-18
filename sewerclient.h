@@ -18,19 +18,19 @@ QT_END_NAMESPACE
 
 struct DetectInfo
 {
-    string s_imgName;       // 简化路径 [3/17/2023]
-    string s_absPath;       // 图片路径 [3/15/2023]
-    string s_defectName;    // 缺陷名称 [3/15/2023]
-    int s_defectLevel;      // 缺陷等级 [3/15/2023]
-    float s_confVal;        // 置信值 [3/15/2023]
+    string _imgName;       // 简化路径 [3/17/2023]
+    string _absPath;       // 图片路径 [3/15/2023]
+    string _defectName;    // 缺陷名称 [3/15/2023]
+    int _defectLevel;      // 缺陷等级 [3/15/2023]
+    float _confVal;        // 置信值 [3/15/2023]
 
     DetectInfo(const string& strName, const string& strAbsPath, 
         const string& strDetectName, int defectLevel, float conVal)
-        : s_imgName(strName)
-        , s_absPath(strAbsPath)
-        , s_defectName(strDetectName)
-        , s_defectLevel(defectLevel)
-        , s_confVal(conVal)
+        : _imgName(strName)
+        , _absPath(strAbsPath)
+        , _defectName(strDetectName)
+        , _defectLevel(defectLevel)
+        , _confVal(conVal)
     {}
 };
 

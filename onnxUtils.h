@@ -27,20 +27,20 @@ using std::ifstream;
 
 struct Config
 {
-	int64_t s_numChannels;		// 通道数
-	int64_t s_width;			// 宽
-	int64_t s_height;			// 高
-	int64_t s_numClasses;		// 类别数目
+	int64_t _numChannels;		// 通道数
+	int64_t _width;			// 宽
+	int64_t _height;			// 高
+	int64_t _numClasses;		// 类别数目
 	// 输入元素数量
-	int64_t s_numInputElements = this->s_numChannels * this->s_height * this->s_width;
+	int64_t _numInputElements = this->_numChannels * this->_height * this->_width;
 
 	Config& operator=(const Config& cfg)
 	{
-		this->s_numChannels = cfg.s_numChannels;
-		this->s_width = cfg.s_width;
-		this->s_height = cfg.s_height;
-		this->s_numClasses = cfg.s_numClasses;
-		this->s_numInputElements = cfg.s_numInputElements;
+		this->_numChannels = cfg._numChannels;
+		this->_width = cfg._width;
+		this->_height = cfg._height;
+		this->_numClasses = cfg._numClasses;
+		this->_numInputElements = cfg._numInputElements;
 		return *this;
 	}
 };

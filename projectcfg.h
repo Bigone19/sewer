@@ -18,38 +18,38 @@ using std::unordered_map;
 // 检测图片属性 [3/13/2023]
 struct ImageInfo
 {
-	int s_idx = -1;
-	QString s_name;	// 文件名称 [3/17/2023]
-	QString s_absPath;
-	QString s_defectName;
-	int s_defectLevel = 0;
+	int _idx = -1;
+	QString _name;	// 文件名称 [3/17/2023]
+	QString _absPath;
+	QString _defectName;
+	int _defectLevel = 0;
 
 	ImageInfo() {}
 
 	ImageInfo(int idx, const QString& strName, const QString& strPath,
 		const QString& defectName, int defectLevel)
-		: s_idx(idx)
-		, s_name(strName)
-		, s_absPath(strPath)
-		, s_defectName(defectName)
-		, s_defectLevel(defectLevel)
+		: _idx(idx)
+		, _name(strName)
+		, _absPath(strPath)
+		, _defectName(defectName)
+		, _defectLevel(defectLevel)
 	{}
 
 	ImageInfo(const QString& strName, const QString& strPath, 
 		const QString& defectName, int defectLevel)
-		: s_name(strName)
-		, s_absPath(strPath)
-		, s_defectName(defectName)
-		, s_defectLevel(defectLevel)
+		: _name(strName)
+		, _absPath(strPath)
+		, _defectName(defectName)
+		, _defectLevel(defectLevel)
 	{}
 
 	ImageInfo& operator=(const ImageInfo& info)
 	{
-		this->s_idx = info.s_idx;
-		this->s_name = info.s_name;
-		this->s_absPath = info.s_absPath;
-		this->s_defectName = info.s_defectName;
-		this->s_defectLevel = info.s_defectLevel;
+		this->_idx = info._idx;
+		this->_name = info._name;
+		this->_absPath = info._absPath;
+		this->_defectName = info._defectName;
+		this->_defectLevel = info._defectLevel;
 		return *this;
 	}
 };

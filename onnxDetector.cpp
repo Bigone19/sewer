@@ -58,11 +58,11 @@ vector<pair<size_t, float>> CDetector::getDetectRes(Mat& srcImage)
 		}
 	}
 	// load config [2/3/2023]
-	array<int64_t, 4> inputShape = { 1, g_cfg.s_numChannels, g_cfg.s_height, g_cfg.s_width };
-	array<int64_t, 2> outputShape = { 1, g_cfg.s_numClasses };
+	array<int64_t, 4> inputShape = { 1, g_cfg._numChannels, g_cfg._height, g_cfg._width };
+	array<int64_t, 2> outputShape = { 1, g_cfg._numClasses };
 
-	array<float, g_cfg.s_numInputElements> input;
-	array<float, g_cfg.s_numClasses> results;
+	array<float, g_cfg._numInputElements> input;
+	array<float, g_cfg._numClasses> results;
 
 	auto memory_info = Ort::MemoryInfo::CreateCpu(OrtDeviceAllocator, OrtMemTypeCPU);
 	auto inputTensor = Ort::Value::CreateTensor<float>(memory_info, input.data(), input.size(), inputShape.data(), inputShape.size());

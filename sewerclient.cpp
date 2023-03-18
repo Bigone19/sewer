@@ -88,16 +88,6 @@ void SewerClient::on_btnSelectFile_clicked()
 		{
 			// 检测按键 [2/27/2023]
 			ui->btnDetect->setEnabled(true);
-			// 清除tab [3/18/2023]
-			int tabCount = ui->imgTabWidget->count();
-			if (tabCount > 1)
-			{
-				clearImgTab();
-				for (int i = 1; i < tabCount; i++)
-				{
-					removeImgWidget(i);
-				}
-			}
 		}
 	}
 }
@@ -106,12 +96,22 @@ void SewerClient::removeImgWidget(int index)
 {
 	QWidget* widget = ui->imgTabWidget->widget(index);
 	ui->imgTabWidget->removeTab(index);
-	delete widget;
+	widget->close();
 }
 
 
 void SewerClient::on_btnDetect_clicked()
 {
+	// 清除tab [3/18/2023]
+	int tabCount = ui->imgTabWidget->count();
+	if (tabCount > 1)
+	{
+		clearImgTab();
+		for (int i = 1; i < tabCount; i++)
+		{
+			removeImgWidget(i);
+		}
+	}
 	if (!ui->imgTab->children().isEmpty())
 	{
 		QObject* tmpLabel = ui->imgTab->children().at(0);
@@ -194,14 +194,14 @@ void SewerClient::writeDocx()
 	m_imageDB->openDatabase();
 	for (auto& info : m_vecDetectInfo)
 	{
-		Table* pTable = m_docx->addTemplate(info.s_absPath, info.s_defectName, info.s_defectLevel);
+		Table* pTable = m_docx->addTemplate(info._absPath, info._defectName, info._defectLevel);
 		// 写入数据库 [3/15/2023]
 		ImageInfo tmpInfo = 
 		{ 
-			QString::fromStdString(info.s_imgName),
-			QString::fromStdString(info.s_absPath),
-			QString::fromStdString(info.s_defectName),
-			info.s_defectLevel
+			QString::fromStdString(info._imgName),
+			QString::fromStdString(info._absPath),
+			QString::fromStdString(info._defectName),
+			info._defectLevel
 		};
 		m_imageDB->insertData(tmpInfo);
 		// 添加映射关系获得图片id [3/18/2023]
@@ -445,20 +445,20 @@ void SewerClient::on_comBoxName_activated(int index)
 	// combox修改缺陷类别id [3/15/2023]
 	int com_idx = (index - 1);
 	// 更新标签后修改combox功能 [3/9/2023]
-	m_vecDetectInfo[m_currTabIdx].s_defectName = m_clsNames.at(com_idx);
+	m_vecDetectInfo[m_currTabIdx]._defectName = m_clsNames.at(com_idx);
 }
 
 void SewerClient::on_imgTabWidget_currentChanged(int index)
 {
 	m_currTabIdx = index;
-	string defectName = m_vecDetectInfo.at(index).s_defectName;
+	string defectName = m_vecDetectInfo.at(index)._defectName;
 	int com_defectNameIdx = g_mapDefectNameIdx.at(defectName);
 	// 切换标签后更新名称combox [3/9/2023]
 	ui->comBoxName->setCurrentIndex(com_defectNameIdx);
 	// 更新等级combox [3/15/2023]
-	ui->comBoxLevel->setCurrentIndex(m_vecDetectInfo[index].s_defectLevel);
+	ui->comBoxLevel->setCurrentIndex(m_vecDetectInfo[index]._defectLevel);
 	// 更新置信值 [3/15/2023]
-	ui->lineEditSimilarity->setText(QString::number(m_vecDetectInfo[index].s_confVal));
+	ui->lineEditSimilarity->setText(QString::number(m_vecDetectInfo[index]._confVal));
 }
 
 void SewerClient::on_listWidgetProject_doubleClicked(const QModelIndex &index)
@@ -470,6 +470,6 @@ void SewerClient::on_listWidgetProject_doubleClicked(const QModelIndex &index)
 void SewerClient::on_comBoxLevel_activated(int index)
 {
 	// 更新缺陷等级 [3/15/2023]
-	m_vecDetectInfo[m_currTabIdx].s_defectLevel = index;
+	m_vecDetectInfo[m_currTabIdx]._defectLevel = index;
 }
 

@@ -152,10 +152,10 @@ void CImageDB::insertData(ImageInfo& info)
 		INSERT INTO images_table(image_name,image_path,defect_name,defect_level) VALUES(:name,:path,:defectName,:defectLevel);
 	)";
 	query.prepare(strSql);
-	query.bindValue(":name", info.s_name);
-	query.bindValue(":path", info.s_absPath);
-	query.bindValue(":defectName", info.s_defectName);
-	query.bindValue(":defectLevel", info.s_defectLevel);
+	query.bindValue(":name", info._name);
+	query.bindValue(":path", info._absPath);
+	query.bindValue(":defectName", info._defectName);
+	query.bindValue(":defectLevel", info._defectLevel);
 	query.exec();
 	// 获取插入最后图片ID [3/18/2023]
 	getLastImageID();
@@ -200,15 +200,15 @@ void CImageDB::updateDefectLevel(const QString& strPath, int defectLevel)
 ImageInfo CImageDB::searchData(const QString& strPath)
 {
 	ImageInfo info;
-	info.s_absPath = strPath;
+	info._absPath = strPath;
 	QSqlQuery query;
 	query.prepare("SELECT image_id,defect_name, defect_level FROM images_table WHERE image_path=:path;");
 	query.bindValue(":path", strPath);
 	if (query.exec()) 
 	{
-		info.s_idx = query.value(0).toInt();
-		info.s_defectName = query.value(1).toString();
-		info.s_defectLevel = query.value(2).toInt();
+		info._idx = query.value(0).toInt();
+		info._defectName = query.value(1).toString();
+		info._defectLevel = query.value(2).toInt();
 	}
 	return info;
 }
