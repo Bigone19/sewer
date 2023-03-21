@@ -33,7 +33,7 @@ SewerClient::SewerClient(QWidget *parent)
 	ui->btnSelectFile->setEnabled(false);
 	ui->btnDocxOutput->setEnabled(false);
 	ui->imgTabWidget->setTabVisible(0, false);
-	ui->imgTab->setAutoFillBackground(true);
+	ui->imgTabWidget->setFocusPolicy(Qt::NoFocus);
 
 	// 项目配置关联数据库 [3/13/2023]
 	m_projectDB = new CProjectDB();
@@ -92,31 +92,20 @@ void SewerClient::on_btnSelectFile_clicked()
 	}
 }
 
-void SewerClient::removeImgWidget(int index)
+void SewerClient::removeImgWidget()
 {
-	QWidget* widget = ui->imgTabWidget->widget(index);
-	ui->imgTabWidget->removeTab(index);
-	widget->close();
+	int tabCount = ui->imgTabWidget->count() - 1;
+	for (int index = tabCount; index > 0; index--)
+	{
+		QWidget* widget = ui->imgTabWidget->widget(index);
+		ui->imgTabWidget->removeTab(index);
+		delete widget;
+	}
 }
 
 
 void SewerClient::on_btnDetect_clicked()
 {
-	// 清除tab [3/18/2023]
-	int tabCount = ui->imgTabWidget->count();
-	if (tabCount > 1)
-	{
-		clearImgTab();
-		for (int i = 1; i < tabCount; i++)
-		{
-			removeImgWidget(i);
-		}
-	}
-	if (!ui->imgTab->children().isEmpty())
-	{
-		QObject* tmpLabel = ui->imgTab->children().at(0);
-		delete tmpLabel;
-	}
 	if (!imgDetect())
 	{
 		qDebug() << ERROR_CODE_8 << Qt::endl;
@@ -149,15 +138,12 @@ bool SewerClient::imgDetect()
 		}
 		qDebug() << SUCCEED_CODE_1;
 		// 开始检测 [2/26/2023]
-		detectInfoUtil(m_lstFileInfo[0]);
-		if (m_lstFileInfo.size() > 1)
+		for (int i = 0; i < m_lstFileInfo.size(); i++)
 		{
-			for (int i = 1; i < m_lstFileInfo.size(); i++)
-			{
-				QFileInfo info = m_lstFileInfo[i];
-				detectInfoUtil(info, true);
-			}
+			QFileInfo info = m_lstFileInfo[i];
+			detectInfoUtil(info, i);
 		}
+		ui->imgTabWidget->setCurrentIndex(1);
 	}
 	catch (const std::exception& e)
 	{
@@ -211,7 +197,7 @@ void SewerClient::writeDocx()
 	m_docx->save(m_docxName);
 }
 
-void SewerClient::detectInfoUtil(QFileInfo& info, bool isMuti /*=false*/)
+void SewerClient::detectInfoUtil(QFileInfo& info, int imgIdx /*=0*/)
 {
 	string imgPath = info.absoluteFilePath().toStdString(); // 待检测图片绝对路径 [2/4/2023]
 	string imgName = info.baseName().toStdString();		// 图片文件名称 [2/4/2023]
@@ -240,7 +226,7 @@ void SewerClient::detectInfoUtil(QFileInfo& info, bool isMuti /*=false*/)
 		autoScaleImg(dstImg);
 		imwrite(dstImgPath, dstImg);
 		// 图片展示 [2/17/2023]
-		displayImg(dstImgPath, isMuti);
+		displayImg(dstImgPath, imgIdx);
 		// <图片路径-缺陷名称>映射关系改为结构体 [3/15/2023]
 		m_vecDetectInfo.emplace_back(DetectInfo(imgName, dstImgPath, defectName, defectLevel, resCls.second));
 	}
@@ -298,39 +284,8 @@ void SewerClient::autoScaleImg(Mat& srcImg)
 	cv::resize(srcImg, srcImg, resizeScale);
 }
 
-void SewerClient::displayImg(string& imgPath, bool isMuti/*=false*/)
+void SewerClient::displayImg(string& imgPath, int imgIdx/*=0*/)
 {
-#if 0
-	const size_t pos = imgPath.find_last_of('/');
-	const QString strImgName = QString::fromStdString(imgPath.substr(pos + 1));
-	QImage img;
-	img.load(QString::fromStdString(imgPath));
-	QPalette palette = ui->imgTab->palette();
-
-	if (!isMuti)
-	{
-		// 更换显示图片方式 [3/2/2023]
-		ui->imgTabWidget->setTabVisible(0, true);
-		ui->imgTabWidget->setTabText(0, strImgName);
-		QLabel* tmpLabel = new QLabel(ui->imgTab);
-		QPixmap pic(QString::fromStdString(imgPath));
-		tmpLabel->setPixmap(pic);
-		QVBoxLayout* tmpVBoxLayout = new QVBoxLayout(ui->imgTab);
-		tmpVBoxLayout->addWidget(tmpLabel);
-		tmpVBoxLayout->deleteLater();
-	}
-	else
-	{
-		QWidget* tmpWidget = new QWidget(ui->imgTabWidget);
-		tmpWidget->setFixedSize(img.size());
-		QLabel* tmpLabel = new QLabel(tmpWidget);
-		QPixmap pic(QString::fromStdString(imgPath));
-		tmpLabel->setPixmap(pic);
-		QVBoxLayout* tmpVBoxLayout = new QVBoxLayout(tmpWidget);
-		tmpVBoxLayout->addWidget(tmpLabel);
-		ui->imgTabWidget->addTab(tmpWidget, strImgName);
-	}
-#endif
 	// 从路径中获取文件名
 	const auto pos = imgPath.find_last_of('/');
 	const QString strImgName = QString::fromStdString(imgPath.substr(pos + 1));
@@ -339,21 +294,8 @@ void SewerClient::displayImg(string& imgPath, bool isMuti/*=false*/)
 	QImage img;
 	img.load(QString::fromStdString(imgPath));
 
-	// 获取 tab 的 palette
-	const QPalette& palette = ui->imgTab->palette();
-
-	// 根据 isMuti 分别处理单张和多张图片
-	if (!isMuti)
-	{
-		// 单张图片，清空 tab 并添加一张新的图片
-		clearImgTab();
-		addImgLabel(strImgName, img);
-	}
-	else
-	{
-		// 多张图片，创建 widget 并添加对应的图片信息
-		addImgWidget(strImgName, img);
-	}
+	// 添加图片，创建 widget 并添加对应的图片信息
+	addImgWidget(imgIdx, strImgName, img);
 }
 
 int SewerClient::setDetectLevel(float confVal)
@@ -377,35 +319,7 @@ int SewerClient::setDetectLevel(float confVal)
 	}
 }
 
-void SewerClient::clearImgTab()
-{
-	QLayout* layout = ui->imgTab->layout();
-	if (layout != nullptr)
-	{
-		while (auto item = layout->takeAt(0))
-		{
-			delete item->widget();
-			delete item;
-		}
-		delete layout;
-	}
-}
-
-void SewerClient::addImgLabel(const QString& imgName, const QImage& img)
-{
-	QLabel* label = new QLabel(ui->imgTab);
-	label->setPixmap(QPixmap::fromImage(img));
-	label->setAlignment(Qt::AlignCenter);
-
-	QVBoxLayout* layout = new QVBoxLayout(ui->imgTab);
-	layout->addWidget(label);
-	ui->imgTab->setLayout(layout);
-
-	ui->imgTabWidget->setTabVisible(0, true);
-	ui->imgTabWidget->setTabText(0, imgName);
-}
-
-void SewerClient::addImgWidget(const QString& imgName, const QImage& img)
+void SewerClient::addImgWidget(int imgIdx, const QString& imgName, const QImage& img)
 {
 	QWidget* widget = new QWidget(ui->imgTabWidget);
 	widget->setFixedSize(img.size());
@@ -417,12 +331,15 @@ void SewerClient::addImgWidget(const QString& imgName, const QImage& img)
 	QVBoxLayout* layout = new QVBoxLayout(widget);
 	layout->addWidget(label);
 	widget->setLayout(layout);
-
-	ui->imgTabWidget->addTab(widget, imgName);
+	int ret = ui->imgTabWidget->addTab(widget, imgName);
+#if 1
+	qDebug() << "insert Tab" << ret << "imgIdx" << imgIdx;
+#endif
 }
 
 void SewerClient::on_btnNewProject_clicked()
 {
+	removeImgWidget();
 	// 添加项目弹窗 [2/12/2023]
 	m_wProject = new projectDlg(this);
 	Qt::WindowFlags flags = Qt::Dialog;
@@ -450,15 +367,15 @@ void SewerClient::on_comBoxName_activated(int index)
 
 void SewerClient::on_imgTabWidget_currentChanged(int index)
 {
-	m_currTabIdx = index;
-	string defectName = m_vecDetectInfo.at(index)._defectName;
+	m_currTabIdx = index == 0 ? 0 : (index - 1);
+	string defectName = m_vecDetectInfo.at(m_currTabIdx)._defectName;
 	int com_defectNameIdx = g_mapDefectNameIdx.at(defectName);
 	// 切换标签后更新名称combox [3/9/2023]
 	ui->comBoxName->setCurrentIndex(com_defectNameIdx);
 	// 更新等级combox [3/15/2023]
-	ui->comBoxLevel->setCurrentIndex(m_vecDetectInfo[index]._defectLevel);
+	ui->comBoxLevel->setCurrentIndex(m_vecDetectInfo[m_currTabIdx]._defectLevel);
 	// 更新置信值 [3/15/2023]
-	ui->lineEditSimilarity->setText(QString::number(m_vecDetectInfo[index]._confVal));
+	ui->lineEditSimilarity->setText(QString::number(m_vecDetectInfo[m_currTabIdx]._confVal));
 }
 
 void SewerClient::on_listWidgetProject_doubleClicked(const QModelIndex &index)

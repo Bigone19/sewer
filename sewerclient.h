@@ -126,7 +126,7 @@ private:
     * @param: 
     * @date: 2023/02/18
     */
-    void detectInfoUtil(QFileInfo& info, bool isMuti =false);
+    void detectInfoUtil(QFileInfo& info, int imgIdx=0);
     /**
     * @brief: 设置docx结果路径
     * @param: 
@@ -150,21 +150,17 @@ private:
     * @param isMuti: 是否多个图片
     * @date: 2023/02/17
     */
-    void displayImg(string& imgPath, bool isMuti=false);
+    void displayImg(string& imgPath, int imgIdx = 0);
     /**
     * @brief: 设置缺陷等级
     * @param: 
     * @date: 2023/03/15
     */
     int setDetectLevel(float confVal);
-    // （可复用）辅助函数：清除图片 Tab 中所有的子部件 [3/16/2023]
-    void clearImgTab();
-    // （可复用）辅助函数：在图片 Tab 中添加一张图片 [3/16/2023]
-    void addImgLabel(const QString& imgName, const QImage& img);
     // （可复用）辅助函数：在图片 Tab 中添加一个包含图片信息的 widget
-    void addImgWidget(const QString& imgName, const QImage& img);
+    void addImgWidget(int imgIdx, const QString& imgName, const QImage& img);
     //  [3/18/2023]
-    void removeImgWidget(int index);
+    void removeImgWidget();
 private:
     Ui::SewerClient *ui;
 
