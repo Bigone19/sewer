@@ -95,6 +95,12 @@ private slots:
     * @date: 2023/03/15
     */
     void on_comBoxLevel_activated(int index);
+    /**
+    * @brief: 自定义listwidget槽函数、弹出右键菜单
+    * @param: 
+    * @date: 2023/03/23
+    */
+    void on_listWidgetProject_customContextMenuRequested(const QPoint& pos);
 
 private:
     /**

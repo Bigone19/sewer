@@ -7,6 +7,7 @@
 #include <QDateTime>
 #include <QBrush>
 #include <QPixmap>
+#include <QMenu>
 
 // combox defect name map [3/4/2023]
 const unordered_map<string, int> g_mapDefectNameIdx =
@@ -34,6 +35,11 @@ SewerClient::SewerClient(QWidget *parent)
 	ui->btnDocxOutput->setEnabled(false);
 	ui->imgTabWidget->setTabVisible(0, false);
 	ui->imgTabWidget->setFocusPolicy(Qt::NoFocus);
+	// 设置 listWidget 对象的上下文菜单策略为自定义 [3/23/2023]
+	ui->listWidgetProject->setContextMenuPolicy(Qt::CustomContextMenu);
+
+	connect(ui->listWidgetProject, SIGNAL(customContextMenuRequested(const QPoint&)),
+		this, SLOT(on_listWidgetProject_customContextMenuRequested(const QPoint&)));
 
 	// 项目配置关联数据库 [3/13/2023]
 	m_projectDB = new CProjectDB();
@@ -388,5 +394,25 @@ void SewerClient::on_comBoxLevel_activated(int index)
 {
 	// 更新缺陷等级 [3/15/2023]
 	m_vecDetectInfo[m_currTabIdx]._defectLevel = index;
+}
+
+void SewerClient::on_listWidgetProject_customContextMenuRequested(const QPoint& pos)
+{
+	QListWidgetItem* item = ui->listWidgetProject->itemAt(pos);
+	if (item)
+	{
+		QMenu* menu = new QMenu(this);
+		QAction* deleteAction = new QAction(tr("删除"), this);
+		// 当用户点击 删除 菜单项时执行该槽函数 [3/23/2023]
+		connect(deleteAction, &QAction::triggered, [=]()
+			{
+				// 从 QListWidget 中移除 item，释放占用的内存 [3/23/2023]
+				ui->listWidgetProject->takeItem(ui->listWidgetProject->row(item));
+				// TODO: 链接数据库操作 [3/23/2023]
+				delete item;
+			});
+		menu->addAction(deleteAction);
+		menu->popup(ui->listWidgetProject->viewport()->mapToGlobal(pos));
+	}
 }
 
