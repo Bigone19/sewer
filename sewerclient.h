@@ -9,6 +9,7 @@
 #include "onnxDetector.h"
 // docx [2/6/2023]
 #include "docxUtils.h"
+#include "projectcfg.h"
 
 using namespace DocxUtils;
 
@@ -18,11 +19,11 @@ QT_END_NAMESPACE
 
 struct DetectInfo
 {
-    string _imgName;       // 简化路径 [3/17/2023]
+    string _imgName;       // 图片名称 [3/17/2023]
     string _absPath;       // 图片路径 [3/15/2023]
     string _defectName;    // 缺陷名称 [3/15/2023]
-    int _defectLevel;      // 缺陷等级 [3/15/2023]
-    float _confVal;        // 置信值 [3/15/2023]
+    int _defectLevel = 0;      // 缺陷等级 [3/15/2023]
+    float _confVal = 0.0f;        // 置信值 [3/15/2023]
 
     DetectInfo(const string& strName, const string& strAbsPath, 
         const string& strDetectName, int defectLevel, float conVal)
@@ -32,11 +33,16 @@ struct DetectInfo
         , _defectLevel(defectLevel)
         , _confVal(conVal)
     {}
+
+    DetectInfo(const ImageInfo& info)
+        : _imgName(info._name.toStdString())
+        , _absPath(info._absPath.toStdString())
+        , _defectName(info._defectName.toStdString())
+        , _defectLevel(info._defectLevel)
+        , _confVal(info._confVal)
+    {}
 };
 
-class CProjectDB;
-class CImageDB;
-class CMapDB;
 class projectDlg;
 class SewerClient : public QMainWindow
 {
@@ -101,7 +107,12 @@ private slots:
     * @date: 2023/03/23
     */
     void on_listWidgetProject_customContextMenuRequested(const QPoint& pos);
-
+    /**
+    * @brief: QMenu点击菜单项后隐藏菜单的槽函数
+    * @param: 
+    * @date: 2023/03/24
+    */
+    void onMenuItemClicked();
 private:
     /**
     * @brief: 设置检测完成后combox选项
@@ -156,7 +167,7 @@ private:
     * @param isMuti: 是否多个图片
     * @date: 2023/02/17
     */
-    void displayImg(string& imgPath, int imgIdx = 0);
+    void displayImg(string& imgPath);
     /**
     * @brief: 设置缺陷等级
     * @param: 
@@ -164,9 +175,17 @@ private:
     */
     int setDetectLevel(float confVal);
     // （可复用）辅助函数：在图片 Tab 中添加一个包含图片信息的 widget
-    void addImgWidget(int imgIdx, const QString& imgName, const QImage& img);
-    //  [3/18/2023]
+    void addImgWidget(const QString& imgName, const QImage& img);
+    // （可复用）辅助函数：移除tab [3/18/2023]
     void removeImgWidget();
+    // 获取检测项目存储信息 [3/26/2023]
+    void getProjectImgInfo(const QString& projectName);
+    /**
+    * @brief: （可复用）辅助函数：根据获取的检测项目图片信息更新显示
+    * @param: 
+    * @date: 2023/03/26
+    */
+    void updateDisplay();
 private:
     Ui::SewerClient *ui;
 
@@ -190,16 +209,19 @@ private:
     vector<DetectInfo> m_vecDetectInfo;             // 检测图片信息 [3/15/2023]
     int m_currTabIdx;  // 当前tab id [3/9/2023]
 
-    CProjectDB* m_projectDB;        // 项目配置数据库写入 [3/13/2023]
     QStringList m_lstProjects;      // 已保存项目列表 [3/14/2023]
+
+	CProjectDB* m_projectDB;        // 项目配置数据库写入 [3/13/2023]
     CImageDB* m_imageDB;            // 检测后图片数据库写入 [3/14/2023]
     CMapDB* m_mapDB;                // 映射关系数据库 [3/15/2023]
 
-    int m_currProjectIdx;           // 当前项目id [3/17/2023]
+    int m_currProjectIdx;           // 当前项目在数据库中id [3/17/2023]
     QString m_currProjectName;      // 当前项目名称 [3/17/2023]
+    vector<ImageInfo> m_vecImgInfo; // 选中检测项目下检测图片信息列表 [3/26/2023]
 
     friend class projectDlg;
     friend class CProjectDB;
     friend class CImageDB;
+    friend class CMapDB;
 };
 #endif // SEWERCLIENT_H

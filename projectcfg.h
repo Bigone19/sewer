@@ -19,28 +19,31 @@ using std::unordered_map;
 struct ImageInfo
 {
 	int _idx = -1;
-	QString _name;	// 文件名称 [3/17/2023]
-	QString _absPath;
-	QString _defectName;
-	int _defectLevel = 0;
+	QString _name;			// 文件名称 [3/17/2023]
+	QString _absPath;		// 图片路径 [3/26/2023]
+	QString _defectName;	// 缺陷名称 [3/26/2023]
+	int _defectLevel = 0;	// 缺陷等级 [3/26/2023]
+	float _confVal = 0.0f;	// 置信值 [3/26/2023]
 
 	ImageInfo() {}
 
 	ImageInfo(int idx, const QString& strName, const QString& strPath,
-		const QString& defectName, int defectLevel)
+		const QString& defectName, int defectLevel, float confVal)
 		: _idx(idx)
 		, _name(strName)
 		, _absPath(strPath)
 		, _defectName(defectName)
 		, _defectLevel(defectLevel)
+		, _confVal(confVal)
 	{}
 
 	ImageInfo(const QString& strName, const QString& strPath, 
-		const QString& defectName, int defectLevel)
+		const QString& defectName, int defectLevel, float confVal)
 		: _name(strName)
 		, _absPath(strPath)
 		, _defectName(defectName)
 		, _defectLevel(defectLevel)
+		, _confVal(confVal)
 	{}
 
 	ImageInfo& operator=(const ImageInfo& info)
@@ -50,6 +53,7 @@ struct ImageInfo
 		this->_absPath = info._absPath;
 		this->_defectName = info._defectName;
 		this->_defectLevel = info._defectLevel;
+		this->_confVal = info._confVal;
 		return *this;
 	}
 };
@@ -105,12 +109,12 @@ public:
 	virtual ~CImageDB();
 
 	// CRUD [3/13/2023]
-	void insertData(const QString& strName,const QString& strPath, const QString&  defectName, int defectLevel);
 	void insertData(ImageInfo& info);	// overload [3/17/2023]
 	void deleteData(const QString& strPath);
 	void updateDefectName(const QString& strPath, const QString& defectName);
 	void updateDefectLevel(const QString& strPath, int defectLevel);
 	ImageInfo searchData(const QString& strPath);
+	ImageInfo searchData(const int imgId);
 	/**
 	* @brief: 获取图片名称-属性映射
 	* @param: 
@@ -122,7 +126,7 @@ public:
 	void closeDatabase();
 private:
 	/**
-	* @brief: 获取最后添加图片ID
+	* @brief: 获取最后添加图片ID、用于插入图片后更新映射关系
 	* @param: 
 	* @date: 2023/03/18
 	*/
@@ -157,6 +161,8 @@ private:
 	bool initialMapTable();
 private:
 	unordered_map<int, vector<int> > m_mapProImgIdx;		// 项目图片 [3/17/2023]
+
+	friend class SewerClient;
 };
 
 #endif // !__PROJECTCFG_H__

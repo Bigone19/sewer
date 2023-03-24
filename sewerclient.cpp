@@ -2,7 +2,6 @@
 #include "ui_sewerclient.h"
 #include "table.h"
 #include "projectdlg.h"
-#include "projectcfg.h"
 
 #include <QDateTime>
 #include <QBrush>
@@ -64,6 +63,7 @@ SewerClient::~SewerClient()
 	m_detectResVec.clear();
 	m_clsNames.clear();
     m_fileList.clear();
+	m_vecImgInfo.clear();
     delete ui;
 }
 
@@ -109,6 +109,53 @@ void SewerClient::removeImgWidget()
 	}
 }
 
+void SewerClient::getProjectImgInfo(const QString& projectName)
+{
+	auto proIter = m_projectDB->m_mapNameIdx.find(projectName);
+	if (proIter != m_projectDB->m_mapNameIdx.end())
+	{
+		int projectId = proIter->second;
+		auto imgIt = m_mapDB->m_mapProImgIdx.find(projectId);
+		if (imgIt != m_mapDB->m_mapProImgIdx.end())
+		{
+			vector<int> vecImage = imgIt->second;
+			m_vecImgInfo.clear();
+			// 清空检测图片信息 [3/26/2023]
+			m_vecDetectInfo.clear();
+#if 0
+			if (m_currProjectIdx != projectId)
+			{
+				// 更换检测项目后清空检测图片信息 [3/26/2023]
+			}
+			else
+			{
+				// TODO: 添加获取当前检测信息逻辑 [3/26/2023]
+			}
+#endif
+			m_vecImgInfo.reserve(vecImage.size());
+			// 遍历获取图片信息 [3/25/2023]
+			for (int& imgId : vecImage)
+			{
+				ImageInfo info = m_imageDB->searchData(imgId);
+				m_vecImgInfo.emplace_back(info);
+				m_vecDetectInfo.emplace_back(DetectInfo(info));
+			}
+		}
+	}
+}
+
+
+void SewerClient::updateDisplay()
+{
+	// 清空tab [3/26/2023]
+	removeImgWidget();
+	int idx = 0;
+	for (ImageInfo& info : m_vecImgInfo)
+	{
+		string imgPath = info._absPath.toStdString();
+		displayImg(imgPath);
+	}
+}
 
 void SewerClient::on_btnDetect_clicked()
 {
@@ -183,23 +230,22 @@ void SewerClient::writeDocx()
 	// 打开docx模板 [2/14/2023]
 	m_docx = new CDox("default.docx");
 	// 绘制表格 [2/26/2023]
-	m_imageDB->openDatabase();
 	for (auto& info : m_vecDetectInfo)
 	{
 		Table* pTable = m_docx->addTemplate(info._absPath, info._defectName, info._defectLevel);
 		// 写入数据库 [3/15/2023]
-		ImageInfo tmpInfo = 
-		{ 
+		ImageInfo tmpInfo =
+		{
 			QString::fromStdString(info._imgName),
 			QString::fromStdString(info._absPath),
 			QString::fromStdString(info._defectName),
-			info._defectLevel
+			info._defectLevel,
+			info._confVal
 		};
 		m_imageDB->insertData(tmpInfo);
 		// 添加映射关系获得图片id [3/18/2023]
 		m_mapDB->insertData(m_currProjectIdx, m_imageDB->m_lastImgIdx);
 	}
-	m_imageDB->closeDatabase();
 	m_docx->save(m_docxName);
 }
 
@@ -232,7 +278,7 @@ void SewerClient::detectInfoUtil(QFileInfo& info, int imgIdx /*=0*/)
 		autoScaleImg(dstImg);
 		imwrite(dstImgPath, dstImg);
 		// 图片展示 [2/17/2023]
-		displayImg(dstImgPath, imgIdx);
+		displayImg(dstImgPath);
 		// <图片路径-缺陷名称>映射关系改为结构体 [3/15/2023]
 		m_vecDetectInfo.emplace_back(DetectInfo(imgName, dstImgPath, defectName, defectLevel, resCls.second));
 	}
@@ -290,7 +336,7 @@ void SewerClient::autoScaleImg(Mat& srcImg)
 	cv::resize(srcImg, srcImg, resizeScale);
 }
 
-void SewerClient::displayImg(string& imgPath, int imgIdx/*=0*/)
+void SewerClient::displayImg(string& imgPath)
 {
 	// 从路径中获取文件名
 	const auto pos = imgPath.find_last_of('/');
@@ -301,7 +347,7 @@ void SewerClient::displayImg(string& imgPath, int imgIdx/*=0*/)
 	img.load(QString::fromStdString(imgPath));
 
 	// 添加图片，创建 widget 并添加对应的图片信息
-	addImgWidget(imgIdx, strImgName, img);
+	addImgWidget(strImgName, img);
 }
 
 int SewerClient::setDetectLevel(float confVal)
@@ -325,7 +371,7 @@ int SewerClient::setDetectLevel(float confVal)
 	}
 }
 
-void SewerClient::addImgWidget(int imgIdx, const QString& imgName, const QImage& img)
+void SewerClient::addImgWidget(const QString& imgName, const QImage& img)
 {
 	QWidget* widget = new QWidget(ui->imgTabWidget);
 	widget->setFixedSize(img.size());
@@ -338,9 +384,6 @@ void SewerClient::addImgWidget(int imgIdx, const QString& imgName, const QImage&
 	layout->addWidget(label);
 	widget->setLayout(layout);
 	int ret = ui->imgTabWidget->addTab(widget, imgName);
-#if 1
-	qDebug() << "insert Tab" << ret << "imgIdx" << imgIdx;
-#endif
 }
 
 void SewerClient::on_btnNewProject_clicked()
@@ -386,7 +429,20 @@ void SewerClient::on_imgTabWidget_currentChanged(int index)
 
 void SewerClient::on_listWidgetProject_doubleClicked(const QModelIndex &index)
 {
-	// TODO: 双击listwidget修改项目名称功能 [3/15/2023]
+	// 双击listwidget跳转到项目内容功能 [3/24/2023]
+	if (!index.isValid())
+	{
+		return;
+	}
+	QListWidgetItem* item = ui->listWidgetProject->item(index.row());
+	QString projectName = item->text();	// 检测项目名称 [3/25/2023]
+	// 通过映射获取存储的信息 [3/24/2023]
+	getProjectImgInfo(projectName);
+	// 根据获取的检测项目图片信息更新显示 [3/26/2023]
+	if (!m_vecImgInfo.empty())
+	{
+		updateDisplay();
+	}
 }
 
 
@@ -399,20 +455,35 @@ void SewerClient::on_comBoxLevel_activated(int index)
 void SewerClient::on_listWidgetProject_customContextMenuRequested(const QPoint& pos)
 {
 	QListWidgetItem* item = ui->listWidgetProject->itemAt(pos);
-	if (item)
+	if (!item)
 	{
-		QMenu* menu = new QMenu(this);
-		QAction* deleteAction = new QAction(tr("删除"), this);
-		// 当用户点击 删除 菜单项时执行该槽函数 [3/23/2023]
-		connect(deleteAction, &QAction::triggered, [=]()
-			{
-				// 从 QListWidget 中移除 item，释放占用的内存 [3/23/2023]
-				ui->listWidgetProject->takeItem(ui->listWidgetProject->row(item));
-				// TODO: 链接数据库操作 [3/23/2023]
-				delete item;
-			});
-		menu->addAction(deleteAction);
-		menu->popup(ui->listWidgetProject->viewport()->mapToGlobal(pos));
+		return;
+	}
+	QMenu* menu = new QMenu(this);
+	connect(menu, SIGNAL(aboutToHide()), this, SLOT(onMenuItemClicked()));
+
+	QAction* deleteAction = new QAction(tr("删除"), this);
+	menu->addAction(deleteAction);
+	menu->popup(ui->listWidgetProject->viewport()->mapToGlobal(pos));
+	menu->setAttribute(Qt::WA_DeleteOnClose);	// 菜单关闭时自动释放内存 [3/24/2023]
+	// 当用户点击 删除 菜单项时执行该槽函数 [3/23/2023]
+	connect(deleteAction, &QAction::triggered, [=]()
+		{
+			// 从 QListWidget 中移除 item，释放占用的内存 [3/23/2023]
+			ui->listWidgetProject->takeItem(ui->listWidgetProject->row(item));
+			// TODO: 链接数据库操作 [3/23/2023]
+			QString projectName = item->text();
+			m_projectDB->deleteData(projectName);
+			delete item;
+		});
+}
+
+void SewerClient::onMenuItemClicked()
+{
+	QMenu* menu = qobject_cast<QMenu*>(sender());
+	if (menu)
+	{
+		menu->close();
 	}
 }
 

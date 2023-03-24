@@ -38,9 +38,7 @@ void projectDlg::on_btnProjectName_clicked()
     m_client->ui->listWidgetProject->addItem(m_projectName);
     m_client->m_currProjectName = m_projectName;
     // 写入数据库 [3/14/2023]
-    m_client->m_projectDB->openDatabase();
     m_client->m_projectDB->insertData(m_projectName);
-    m_client->m_projectDB->closeDatabase();
     this->close();
 }
 
