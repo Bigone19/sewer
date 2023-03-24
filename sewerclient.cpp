@@ -199,7 +199,7 @@ void SewerClient::writeDocx()
 		// 添加映射关系获得图片id [3/18/2023]
 		m_mapDB->insertData(m_currProjectIdx, m_imageDB->m_lastImgIdx);
 	}
-	m_imageDB->closeDatabase();
+	//m_imageDB->closeDatabase();
 	m_docx->save(m_docxName);
 }
 
@@ -386,7 +386,13 @@ void SewerClient::on_imgTabWidget_currentChanged(int index)
 
 void SewerClient::on_listWidgetProject_doubleClicked(const QModelIndex &index)
 {
-	// TODO: 双击listwidget修改项目名称功能 [3/15/2023]
+	// 双击listwidget跳转到项目内容功能 [3/24/2023]
+	if (!index.isValid())
+	{
+		return;
+	}
+	QListWidgetItem* item = ui->listWidgetProject->item(index.row());
+	QString projectName = item->text();
 }
 
 
@@ -399,20 +405,35 @@ void SewerClient::on_comBoxLevel_activated(int index)
 void SewerClient::on_listWidgetProject_customContextMenuRequested(const QPoint& pos)
 {
 	QListWidgetItem* item = ui->listWidgetProject->itemAt(pos);
-	if (item)
+	if (!item)
 	{
-		QMenu* menu = new QMenu(this);
-		QAction* deleteAction = new QAction(tr("删除"), this);
-		// 当用户点击 删除 菜单项时执行该槽函数 [3/23/2023]
-		connect(deleteAction, &QAction::triggered, [=]()
-			{
-				// 从 QListWidget 中移除 item，释放占用的内存 [3/23/2023]
-				ui->listWidgetProject->takeItem(ui->listWidgetProject->row(item));
-				// TODO: 链接数据库操作 [3/23/2023]
-				delete item;
-			});
-		menu->addAction(deleteAction);
-		menu->popup(ui->listWidgetProject->viewport()->mapToGlobal(pos));
+		return;
+	}
+	QMenu* menu = new QMenu(this);
+	connect(menu, SIGNAL(aboutToHide()), this, SLOT(onMenuItemClicked()));
+
+	QAction* deleteAction = new QAction(tr("删除"), this);
+	menu->addAction(deleteAction);
+	menu->popup(ui->listWidgetProject->viewport()->mapToGlobal(pos));
+	menu->setAttribute(Qt::WA_DeleteOnClose);	// 菜单关闭时自动释放内存 [3/24/2023]
+	// 当用户点击 删除 菜单项时执行该槽函数 [3/23/2023]
+	connect(deleteAction, &QAction::triggered, [=]()
+		{
+			// 从 QListWidget 中移除 item，释放占用的内存 [3/23/2023]
+			ui->listWidgetProject->takeItem(ui->listWidgetProject->row(item));
+			// TODO: 链接数据库操作 [3/23/2023]
+			QString projectName = item->text();
+			m_projectDB->deleteData(projectName);
+			delete item;
+		});
+}
+
+void SewerClient::onMenuItemClicked()
+{
+	QMenu* menu = qobject_cast<QMenu*>(sender());
+	if (menu)
+	{
+		menu->close();
 	}
 }
 

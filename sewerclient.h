@@ -101,7 +101,12 @@ private slots:
     * @date: 2023/03/23
     */
     void on_listWidgetProject_customContextMenuRequested(const QPoint& pos);
-
+    /**
+    * @brief: QMenu点击菜单项后隐藏菜单的槽函数
+    * @param: 
+    * @date: 2023/03/24
+    */
+    void onMenuItemClicked();
 private:
     /**
     * @brief: 设置检测完成后combox选项

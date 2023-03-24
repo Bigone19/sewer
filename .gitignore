@@ -383,9 +383,8 @@ FodyWeavers.xsd
 /.qmake.stash
 /sewer.sln
 /ui_sewerclient.h
-/projects/qwe_20230214
-/projects/dd_20230215
 /projects
 /projectInfo.db
 /imageInfo.db
-/sewerclient - 副本.ui
+
+/lib/docxlibd.lib
