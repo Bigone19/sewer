@@ -1,5 +1,16 @@
 #include "projectcfg.h"
 
+CProjectDB* CProjectDB::m_pInstance = nullptr;
+
+CProjectDB* CProjectDB::getInstance()
+{
+	if (m_pInstance == nullptr)
+	{
+		m_pInstance = new CProjectDB();
+	}
+	return m_pInstance;
+}
+
 CProjectDB::CProjectDB()
 {
 	if (m_db.open())
@@ -117,6 +128,17 @@ bool CProjectDB::openDatabase()
 void CProjectDB::closeDatabase()
 {
 	m_db.close();
+}
+
+CImageDB* CImageDB::m_pInstance = nullptr;
+
+CImageDB* CImageDB::getInstance()
+{
+	if (m_pInstance == nullptr)
+	{
+		m_pInstance = new CImageDB();
+	}
+	return m_pInstance;
 }
 
 CImageDB::CImageDB()
@@ -304,6 +326,17 @@ bool CImageDB::initialImageTable()
 		qDebug() << "create image table failed" << query.lastError();
 	}
 	return ret;
+}
+
+CMapDB* CMapDB::m_pInstance = nullptr;
+
+CMapDB* CMapDB::getInstance()
+{
+	if (m_pInstance == nullptr)
+	{
+		m_pInstance = new CMapDB();
+	}
+	return m_pInstance;
 }
 
 CMapDB::CMapDB()

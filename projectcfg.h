@@ -62,7 +62,7 @@ struct ImageInfo
 class CProjectDB : public CSqlUtils
 {
 public:
-	CProjectDB();
+	static CProjectDB* getInstance();
 	virtual ~CProjectDB();
 
 	// CRUD [3/13/2023]
@@ -83,6 +83,7 @@ public:
 	*/
 	void closeDatabase();
 private:
+	CProjectDB();
 	/**
 	* @brief: 初始化表
 	* @param: 
@@ -96,6 +97,8 @@ private:
 	*/
 	void updateMap(const QString& proName);
 private:
+	static CProjectDB* m_pInstance;
+
 	unordered_map<QString, int> m_mapNameIdx;	// 名称-ID映射关系 [3/16/2023]
 
 	friend class SewerClient;
@@ -105,7 +108,7 @@ private:
 class CImageDB : public CSqlUtils
 {
 public:
-	CImageDB();
+	static CImageDB* getInstance();
 	virtual ~CImageDB();
 
 	// CRUD [3/13/2023]
@@ -125,6 +128,7 @@ public:
 	bool openDatabase();
 	void closeDatabase();
 private:
+	CImageDB();
 	/**
 	* @brief: 获取最后添加图片ID、用于插入图片后更新映射关系
 	* @param: 
@@ -134,6 +138,8 @@ private:
 	// 初始化 [3/18/2023]
 	bool initialImageTable();
 private:
+	static CImageDB* m_pInstance;
+
 	unordered_map<QString, ImageInfo> m_mapNameIdx;	// 名称-ID映射关系 [3/17/2023]
 	int m_lastImgIdx;	// 最后插入图片ID [3/18/2023]
 
@@ -144,7 +150,6 @@ private:
 class CMapDB : public CSqlUtils
 {
 public:
-	CMapDB();
 	virtual ~CMapDB();
 
 	// CRUD [3/15/2023]
@@ -157,12 +162,18 @@ public:
 
 	bool openDatabase();
 	void closeDatabase();
+
+	static CMapDB* getInstance();
 private:
+	CMapDB();
+
 	bool initialMapTable();
 private:
+	static CMapDB* m_pInstance;
 	unordered_map<int, vector<int> > m_mapProImgIdx;		// 项目图片 [3/17/2023]
 
 	friend class SewerClient;
 };
+
 
 #endif // !__PROJECTCFG_H__

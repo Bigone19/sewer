@@ -41,15 +41,15 @@ SewerClient::SewerClient(QWidget *parent)
 		this, SLOT(on_listWidgetProject_customContextMenuRequested(const QPoint&)));
 
 	// 项目配置关联数据库 [3/13/2023]
-	m_projectDB = new CProjectDB();
+	m_projectDB = CProjectDB::getInstance();
 	// 加载已保存项目列表 [3/14/2023]
 	m_projectDB->getAllProjects(m_lstProjects);
 	ui->listWidgetProject->addItems(m_lstProjects);
 	
-	m_imageDB = new CImageDB();
+	m_imageDB = CImageDB::getInstance();
 	// 加载图片信息 [3/17/2023]
 	m_imageDB->loadMapNameIdx();
-	m_mapDB = new CMapDB();
+	m_mapDB = CMapDB::getInstance();
 	m_mapDB->loadAllMapInfo();
 }
 
