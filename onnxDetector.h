@@ -69,7 +69,7 @@ private:
 	*/
 	bool setClsNamePath();
 	/**
-	* @brief:
+	* @brief: stringתwstring
 	* @param:
 	* @date: 2023/02/03
 	*/

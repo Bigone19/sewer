@@ -16,7 +16,7 @@ CProjectDB::CProjectDB()
 	if (m_db.open())
 	{
 		// 创建项目数据表 [3/13/2023]
-		initialProjectTable();
+		initialTable();
 	}
 }
 
@@ -25,7 +25,7 @@ CProjectDB::~CProjectDB()
 	m_mapNameIdx.clear();
 }
 
-bool CProjectDB::initialProjectTable()
+bool CProjectDB::initialTable()
 {
 	const QString sql = R"(
         CREATE TABLE IF NOT EXISTS projects_table (
@@ -81,12 +81,13 @@ void CProjectDB::deleteData(const QString& name)
 	query.exec();
 }
 
-void CProjectDB::updateName(const QString& name)
+void CProjectDB::updateName(const QString& oldName, const QString& name)
 {
-	QString sql = R"(UPDATE projects_table SET project_name=:name WHERE project_name!=:name;)";
+	QString sql = R"(UPDATE projects_table SET project_name=:name WHERE project_name=:oldname;)";
 	QSqlQuery query;
 
 	query.prepare(sql);
+	query.bindValue(":oldname", oldName);
 	query.bindValue(":name", name);
 
 	if (!query.exec()) 
@@ -146,7 +147,7 @@ CImageDB::CImageDB()
 	if (m_db.open())
 	{
 		// 创建图片表 [3/14/2023]
-		initialImageTable();
+		initialTable();
 	}
 }
 
@@ -303,7 +304,7 @@ void CImageDB::getLastImageID()
 	}
 }
 
-bool CImageDB::initialImageTable()
+bool CImageDB::initialTable()
 {
 	const QString sql = R"(
 		CREATE TABLE IF NOT EXISTS images_table (
@@ -344,7 +345,7 @@ CMapDB::CMapDB()
 	if (m_db.open())
 	{
 		// 创建映射表 [3/14/2023]
-		initialMapTable();
+		initialTable();
 	}
 }
 
@@ -432,7 +433,7 @@ void CMapDB::closeDatabase()
 	m_db.close();
 }
 
-bool CMapDB::initialMapTable()
+bool CMapDB::initialTable()
 {
 	// 判断是否已经存在表 [3/17/2023]
 	const QString sql = R"(
