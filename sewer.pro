@@ -26,7 +26,9 @@ HEADERS += \
     config.h \
     docxUtils.h \
     projectcfg.h \
-    sqlUtils.h
+    sqlUtils.h \
+    sqlOperation.h \
+    databaseFactory.h
 
 FORMS += \
     projectdlg.ui \

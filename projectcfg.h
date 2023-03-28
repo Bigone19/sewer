@@ -11,6 +11,7 @@
 #include <unordered_map>
 
 #include "sqlUtils.h"
+#include "sqlOperation.h"
 
 using std::vector;
 using std::unordered_map;
@@ -59,7 +60,7 @@ struct ImageInfo
 };
 
 // 项目数据 [3/13/2023]
-class CProjectDB : public CSqlUtils
+class CProjectDB : public CSqlUtils, public CSqlOperation
 {
 public:
 	static CProjectDB* getInstance();
@@ -67,29 +68,17 @@ public:
 
 	// CRUD [3/13/2023]
 	void insertData(const QString& name);	// 插入数据更新映射 [3/17/2023]
-	void deleteData(const QString& name);
-	void updateName(const QString& name);
+	void updateName(const QString& oldName, const QString& name);
 	void getAllProjects(QStringList& lstProjects);
-	/**
-	* @brief: 打开数据库
-	* @param: 
-	* @date: 2023/03/14
-	*/
-	bool openDatabase();
-	/**
-	* @brief: 关闭数据库
-	* @param: 
-	* @date: 2023/03/13
-	*/
-	void closeDatabase();
+
+	// 基类函数 [3/27/2023]
+	virtual bool openDatabase();
+	virtual void closeDatabase();
+	virtual bool initialTable();
+	virtual void deleteData(const QString& name);
+
 private:
 	CProjectDB();
-	/**
-	* @brief: 初始化表
-	* @param: 
-	* @date: 2023/03/13
-	*/
-	bool initialProjectTable();
 	/**
 	* @brief: 更新名称-ID映射关系
 	* @param: 
@@ -105,15 +94,14 @@ private:
 };
 
 // 项目中检测修改完成的图片数据 [3/13/2023]
-class CImageDB : public CSqlUtils
+class CImageDB : public CSqlUtils, public CSqlOperation
 {
 public:
 	static CImageDB* getInstance();
 	virtual ~CImageDB();
 
 	// CRUD [3/13/2023]
-	void insertData(ImageInfo& info);	// overload [3/17/2023]
-	void deleteData(const QString& strPath);
+	void insertData(ImageInfo& info);
 	void updateDefectName(const QString& strPath, const QString& defectName);
 	void updateDefectLevel(const QString& strPath, int defectLevel);
 	ImageInfo searchData(const QString& strPath);
@@ -125,8 +113,12 @@ public:
 	*/
 	void loadMapNameIdx();
 
-	bool openDatabase();
-	void closeDatabase();
+	// 基类函数 [3/27/2023]
+	virtual bool openDatabase();
+	virtual void closeDatabase();
+	virtual bool initialTable();
+	virtual void deleteData(const QString& strPath);
+
 private:
 	CImageDB();
 	/**
@@ -135,8 +127,7 @@ private:
 	* @date: 2023/03/18
 	*/
 	void getLastImageID();
-	// 初始化 [3/18/2023]
-	bool initialImageTable();
+
 private:
 	static CImageDB* m_pInstance;
 
@@ -147,11 +138,12 @@ private:
 };
 
 // 映射关系表 [3/13/2023]
-class CMapDB : public CSqlUtils
+class CMapDB : public CSqlUtils, public CSqlOperation
 {
 public:
-	virtual ~CMapDB();
+	static CMapDB* getInstance();
 
+	virtual ~CMapDB();
 	// CRUD [3/15/2023]
 	void insertData(int projectIdx, int imageIdx);
 	// 项目-图片映射 [3/17/2023]
@@ -160,14 +152,14 @@ public:
 	void deleteDataFromProject(int projectIdx);
 	void updateImageIdx(int projectIdx, int imageIdx);
 
-	bool openDatabase();
-	void closeDatabase();
-
-	static CMapDB* getInstance();
+	// 基类函数 [3/27/2023]
+	virtual bool openDatabase();
+	virtual void closeDatabase();
+	virtual bool initialTable();
+	virtual void deleteData(const QString& name) {};
 private:
 	CMapDB();
 
-	bool initialMapTable();
 private:
 	static CMapDB* m_pInstance;
 	unordered_map<int, vector<int> > m_mapProImgIdx;		// 项目图片 [3/17/2023]

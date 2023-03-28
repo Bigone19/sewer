@@ -7,6 +7,7 @@
 #include <QBrush>
 #include <QPixmap>
 #include <QMenu>
+#include <QInputDialog>
 
 // combox defect name map [3/4/2023]
 const unordered_map<string, int> g_mapDefectNameIdx =
@@ -41,15 +42,15 @@ SewerClient::SewerClient(QWidget *parent)
 		this, SLOT(on_listWidgetProject_customContextMenuRequested(const QPoint&)));
 
 	// 项目配置关联数据库 [3/13/2023]
-	m_projectDB = CProjectDB::getInstance();
+	m_projectDB = (CProjectDB*)CDatabaseFactory::createDB(PROJECT_DB);
 	// 加载已保存项目列表 [3/14/2023]
 	m_projectDB->getAllProjects(m_lstProjects);
 	ui->listWidgetProject->addItems(m_lstProjects);
 	
-	m_imageDB = CImageDB::getInstance();
+	m_imageDB = (CImageDB*)CDatabaseFactory::createDB(IMAGE_DB);
 	// 加载图片信息 [3/17/2023]
 	m_imageDB->loadMapNameIdx();
-	m_mapDB = CMapDB::getInstance();
+	m_mapDB = (CMapDB*)CDatabaseFactory::createDB(MAP_DB);
 	m_mapDB->loadAllMapInfo();
 }
 
@@ -147,8 +148,6 @@ void SewerClient::getProjectImgInfo(const QString& projectName)
 
 void SewerClient::updateDisplay()
 {
-	// 清空tab [3/26/2023]
-	removeImgWidget();
 	int idx = 0;
 	for (ImageInfo& info : m_vecImgInfo)
 	{
@@ -196,6 +195,7 @@ bool SewerClient::imgDetect()
 			QFileInfo info = m_lstFileInfo[i];
 			detectInfoUtil(info, i);
 		}
+		// 检测完成后跳转到tab [3/28/2023]
 		ui->imgTabWidget->setCurrentIndex(1);
 	}
 	catch (const std::exception& e)
@@ -429,6 +429,8 @@ void SewerClient::on_imgTabWidget_currentChanged(int index)
 
 void SewerClient::on_listWidgetProject_doubleClicked(const QModelIndex &index)
 {
+	// 清空tab [3/26/2023]
+	removeImgWidget();
 	// 双击listwidget跳转到项目内容功能 [3/24/2023]
 	if (!index.isValid())
 	{
@@ -442,6 +444,7 @@ void SewerClient::on_listWidgetProject_doubleClicked(const QModelIndex &index)
 	if (!m_vecImgInfo.empty())
 	{
 		updateDisplay();
+		ui->imgTabWidget->setCurrentIndex(1);
 	}
 }
 
@@ -460,30 +463,51 @@ void SewerClient::on_listWidgetProject_customContextMenuRequested(const QPoint& 
 		return;
 	}
 	QMenu* menu = new QMenu(this);
-	connect(menu, SIGNAL(aboutToHide()), this, SLOT(onMenuItemClicked()));
 
+	QAction* renameAction = new QAction(tr("重命名"), this);	// 检测项目重命名 [3/27/2023]
 	QAction* deleteAction = new QAction(tr("删除"), this);
+	
+	menu->addAction(renameAction);
 	menu->addAction(deleteAction);
+
 	menu->popup(ui->listWidgetProject->viewport()->mapToGlobal(pos));
 	menu->setAttribute(Qt::WA_DeleteOnClose);	// 菜单关闭时自动释放内存 [3/24/2023]
+
 	// 当用户点击 删除 菜单项时执行该槽函数 [3/23/2023]
-	connect(deleteAction, &QAction::triggered, [=]()
-		{
-			// 从 QListWidget 中移除 item，释放占用的内存 [3/23/2023]
-			ui->listWidgetProject->takeItem(ui->listWidgetProject->row(item));
-			// TODO: 链接数据库操作 [3/23/2023]
-			QString projectName = item->text();
-			m_projectDB->deleteData(projectName);
-			delete item;
-		});
+	connect(deleteAction, &QAction::triggered, this, &SewerClient::deleteProjectItem);
+	// 链接槽函数 [3/27/2023]
+	connect(renameAction, &QAction::triggered, this, &SewerClient::renameProjectItem);
 }
 
-void SewerClient::onMenuItemClicked()
+void SewerClient::deleteProjectItem()
 {
-	QMenu* menu = qobject_cast<QMenu*>(sender());
-	if (menu)
+	QAction* action = qobject_cast<QAction*>(sender());
+	QListWidgetItem* item = ui->listWidgetProject->currentItem();
+	// 从 QListWidget 中移除 item，释放占用的内存 [3/23/2023]
+	ui->listWidgetProject->takeItem(ui->listWidgetProject->row(item));
+	QString projectName = item->text();
+	m_projectDB->deleteData(projectName);
+	delete item;
+}
+
+void SewerClient::renameProjectItem()
+{
+	QListWidgetItem* item = ui->listWidgetProject->currentItem();
+	// 实现重命名功能 [3/27/2023]
+	QString oldName = item->text();
+
+	QInputDialog dialog(this);
+	dialog.setWindowTitle(tr("检测项目重命名"));
+	dialog.setLabelText(tr("新名称"));
+	dialog.setTextValue(oldName);
+
+	if (dialog.exec() == QDialog::Accepted)
 	{
-		menu->close();
+		QString newName = dialog.textValue();
+		if (!newName.isEmpty())
+		{
+			item->setText(newName);
+			m_projectDB->updateName(oldName, newName);
+		}
 	}
 }
-

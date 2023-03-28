@@ -9,7 +9,7 @@
 #include "onnxDetector.h"
 // docx [2/6/2023]
 #include "docxUtils.h"
-#include "projectcfg.h"
+#include "databaseFactory.h"
 
 using namespace DocxUtils;
 
@@ -107,12 +107,10 @@ private slots:
     * @date: 2023/03/23
     */
     void on_listWidgetProject_customContextMenuRequested(const QPoint& pos);
-    /**
-    * @brief: QMenu点击菜单项后隐藏菜单的槽函数
-    * @param: 
-    * @date: 2023/03/24
-    */
-    void onMenuItemClicked();
+    // 删除检测项目 [3/27/2023]
+    void deleteProjectItem();
+    // 重命名检测项目 [3/27/2023]
+    void renameProjectItem();
 private:
     /**
     * @brief: 设置检测完成后combox选项
