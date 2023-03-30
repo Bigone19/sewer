@@ -90,7 +90,7 @@ private slots:
     */
     void on_imgTabWidget_currentChanged(int index);
     /**
-    * @brief: 打开检测工程结果文件夹
+    * @brief: 双击打开检测工程结果文件夹
     * @param: 
     * @date: 2023/03/09
     */
@@ -201,6 +201,7 @@ private:
     QString m_projectDirPath;   // 项目文件夹路径 [2/14/2023]
 
     projectDlg* m_wProject;     // 弹出项目窗口 [2/12/2023]
+    QString m_projectName;      // 当前项目名称 [3/29/2023]
 
     bool m_isDetect;            // 是否点击检测按钮 [2/16/2023]
 

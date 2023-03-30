@@ -28,17 +28,17 @@ projectDlg::~projectDlg()
 
 void projectDlg::on_btnProjectName_clicked()
 {
-    m_projectName = ui->editProjectName->text();
-    if (m_projectName.isEmpty())
+    QString projectName = ui->editProjectName->text();
+    if (projectName.isEmpty())
     {
         QMessageBox::warning(this, QString::fromUtf8("项目名称不为空"), QString::fromUtf8("项目名称不为空"));
     }
     m_client->ui->btnSelectFile->setEnabled(true);
     // 添加项目后更新list [3/9/2023]
-    m_client->ui->listWidgetProject->addItem(m_projectName);
-    m_client->m_currProjectName = m_projectName;
+    m_client->ui->listWidgetProject->addItem(projectName);
+    m_client->m_currProjectName = projectName;
     // 写入数据库 [3/14/2023]
-    m_client->m_projectDB->insertData(m_projectName);
+    m_client->m_projectDB->insertData(projectName);
     this->close();
 }
 

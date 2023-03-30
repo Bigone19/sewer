@@ -30,7 +30,6 @@ private slots:
 private:
     Ui::projectDlg *ui;
 
-    QString m_projectName;      // 项目名称 [2/12/2023]
     SewerClient* m_client;      // 主窗口 [2/12/2023]
     
     friend class SewerClient;
