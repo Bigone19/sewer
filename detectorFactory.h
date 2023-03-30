@@ -9,6 +9,8 @@
 /* 2023/03/28                                                           */
 /************************************************************************/
 
+using CQObjectPtr = std::shared_ptr<QObject>;
+
 enum DETECTOR_TYPE
 {
 	RESNET = 0,
@@ -18,11 +20,11 @@ enum DETECTOR_TYPE
 class CDetectorFactory
 {
 public:
-	static QObject* createDetector(DETECTOR_TYPE type)
+	static CQObjectPtr createDetector(DETECTOR_TYPE type)
 	{
-		static const std::unordered_map<DETECTOR_TYPE, std::function<QObject* ()>> mapDetector =
+		static const std::unordered_map<DETECTOR_TYPE, std::function<CQObjectPtr()>> mapDetector =
 		{
-			{RESNET, []() {return new CDetector(); }}
+			{RESNET, []() {return std::make_shared<CDetector>(); }}
 			// TODO: YOLO [3/28/2023]
 		};
 		if (mapDetector.find(type) != mapDetector.end())

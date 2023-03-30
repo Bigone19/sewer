@@ -72,10 +72,10 @@ public:
 	void getAllProjects(QStringList& lstProjects);
 
 	// 基类函数 [3/27/2023]
-	virtual bool openDatabase();
-	virtual void closeDatabase();
-	virtual bool initialTable();
-	virtual void deleteData(const QString& name);
+	virtual bool openDatabase() override;
+	virtual void closeDatabase() override;
+	virtual bool initialTable() override;
+	virtual void deleteData(const QString& name) override;
 
 private:
 	CProjectDB();
@@ -114,10 +114,10 @@ public:
 	void loadMapNameIdx();
 
 	// 基类函数 [3/27/2023]
-	virtual bool openDatabase();
-	virtual void closeDatabase();
-	virtual bool initialTable();
-	virtual void deleteData(const QString& strPath);
+	virtual bool openDatabase() override;
+	virtual void closeDatabase() override;
+	virtual bool initialTable() override;
+	virtual void deleteData(const QString& strPath) override;
 
 private:
 	CImageDB();
@@ -153,9 +153,9 @@ public:
 	void updateImageIdx(int projectIdx, int imageIdx);
 
 	// 基类函数 [3/27/2023]
-	virtual bool openDatabase();
-	virtual void closeDatabase();
-	virtual bool initialTable();
+	virtual bool openDatabase() override;
+	virtual void closeDatabase() override;
+	virtual bool initialTable() override;
 	virtual void deleteData(const QString& name) {};
 private:
 	CMapDB();

@@ -183,7 +183,8 @@ bool SewerClient::imgDetect()
 {
 	try
 	{
-		m_detector = dynamic_cast<CDetector*>(CDetectorFactory::createDetector(RESNET));
+		auto detectorPtr = CDetectorFactory::createDetector(RESNET);
+		m_detector = dynamic_cast<CDetector*>(detectorPtr.get());
 		if (m_clsNames.empty())
 		{
 			m_detector->getClsNames(m_clsNames);
@@ -226,7 +227,7 @@ void SewerClient::writeDocx()
 	// 项目对应的docx文件名称 [2/12/2023]
 	QString currTime = QDateTime::currentDateTime().toString("yyyyMMdd_hh:mm");
 	setProjectDir();
-	m_docxName = (m_projectDirPath + "/" + m_wProject->m_projectName + ".docx");
+	m_docxName = (m_projectDirPath + "/" + m_currProjectName + ".docx");
 	// 打开docx模板 [2/14/2023]
 	m_docx = new CDox("default.docx");
 	// 绘制表格 [2/26/2023]
@@ -309,7 +310,7 @@ void SewerClient::setDocxPath()
 void SewerClient::setProjectDir()
 {
 	QString currTime = QDateTime::currentDateTime().toString("yyyyMMdd");
-	QString dirPath = m_docxDirPath + m_wProject->m_projectName + "_" + currTime;
+	QString dirPath = m_docxDirPath + m_currProjectName + "_" + currTime;
 	QDir tmpDir(dirPath);
 	if (!tmpDir.exists())
 	{
@@ -353,22 +354,7 @@ void SewerClient::displayImg(string& imgPath)
 int SewerClient::setDetectLevel(float confVal)
 {
 	// TODO: 优化算法模型后更新 [3/15/2023]
-	if (confVal <= -3)
-	{
-		return 4;
-	}
-	else if (confVal <= 0)
-	{
-		return 3;
-	}
-	else if (confVal <= 3)
-	{
-		return 2;
-	}
-	else
-	{
-		return 1;
-	}
+	return (confVal < 3) + (confVal < 0) + (confVal < -3) + 1;
 }
 
 void SewerClient::addImgWidget(const QString& imgName, const QImage& img)
@@ -446,6 +432,9 @@ void SewerClient::on_listWidgetProject_doubleClicked(const QModelIndex &index)
 		updateDisplay();
 		ui->imgTabWidget->setCurrentIndex(1);
 	}
+	// 可继续添加图片 [3/29/2023]
+	ui->btnSelectFile->setEnabled(true);
+	m_currProjectName = projectName;
 }
 
 
