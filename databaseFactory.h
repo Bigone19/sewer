@@ -31,7 +31,7 @@ public:
 			{MAP_DB, &CMapDB::getInstance}
 		};
 		// 获取数据库单例 [3/27/2023]
-		unordered_map<DATABASE_TYPE, CreateSqlOpFunc>::const_iterator iter = mapDatabase.find(type);
+		auto iter = mapDatabase.find(type);
 		if (iter != mapDatabase.end())
 		{
 			return iter->second();
